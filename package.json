@@ -1,0 +1,36 @@
+{
+  "name": "meetup-token",
+  "version": "0.0.1",
+  "description": "An Ethereum ERC20 compatible token for members of a meetup.com group",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naddison36/meetup-token.git"
+  },
+  "keywords": [
+    "meetup",
+    "Ethereum",
+    "token",
+    "ERC20",
+    "API"
+  ],
+  "author": "Nick Addison",
+  "license": "MIT",
+  "homepage": "https://github.com/naddison36/meetup-token#readme",
+  "dependencies": {
+    "async": "^2.5.0",
+    "config": "^1.26.2",
+    "config-logger": "git://github.com/naddison36/logger#v0.0.4",
+    "js-yaml": "^3.9.1",
+    "meetup-api": "naddison36/meetup-api",
+    "underscore": "^1.8.3",
+    "verror": "^1.10.0",
+    "web3": "^1.0.0-beta.18"
+  },
+  "devDependencies": {
+    "@types/async": "2.0.40",
+    "@types/node": "^6",
+    "@types/underscore": "^1.8.1",
+    "typescript": "~2.3.1"
+  }
+}

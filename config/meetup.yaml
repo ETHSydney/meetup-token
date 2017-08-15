@@ -1,0 +1,3 @@
+---
+  urlname: 'SydEthereum'
+  apiKey: '<can setup in env var>'  // WARNING do not commit your API key in a public repo!

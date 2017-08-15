@@ -1,0 +1,4 @@
+---
+  wsURL: "ws://localhost:8647"
+  contractAddress: '0xA45125D4eCb367ccD4C626ACFfB355CC4A96a32a'
+  contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991'
