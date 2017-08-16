@@ -29,7 +29,7 @@ class MeetupToken {
     }
     issueTokensToNewMembers() {
         return __awaiter(this, void 0, void 0, function* () {
-            const self = this;
+            const reason = 'newMember';
             try {
                 // get the list of members who have already received tokens in the past
                 const existingTokenHolders = yield this.token.getIssuedMembers();
@@ -46,7 +46,7 @@ class MeetupToken {
                 });
                 logger.debug(`${newMembersWithAddresses.length} members who have not yet been issued tokens`);
                 for (let newMemberWithAddresses of newMembersWithAddresses) {
-                    yield this.token.issueTokens(newMemberWithAddresses.id, newMemberWithAddresses.address, this.issueAmounts['newMember']);
+                    yield this.token.issueTokens(newMemberWithAddresses.address, this.issueAmounts[reason], newMemberWithAddresses.id, reason);
                 }
                 logger.info(`Issued tokens to ${newMembersWithAddresses.length} new members`);
             }
@@ -59,6 +59,7 @@ class MeetupToken {
     }
     issueTokensToMembersAtEvent(eventId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const reason = 'attendEvent';
             try {
                 // get list of members who attended a meetup event
                 const membersAtEvent = yield this.meetup.getMembersAtEvent(eventId);
@@ -71,7 +72,7 @@ class MeetupToken {
                 logger.debug(`${membersWithAddressesAtEvent.length} members at the event with ${eventId} has an address`);
                 // for each member, issue a token
                 for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent) {
-                    yield this.token.issueTokens(memberWithAddressesAtEvent.id, memberWithAddressesAtEvent.address, this.issueAmounts['attendEvent']);
+                    yield this.token.issueTokens(memberWithAddressesAtEvent.address, this.issueAmounts[reason], memberWithAddressesAtEvent.id, reason);
                 }
                 logger.info(`Issued tokens to ${membersWithAddressesAtEvent.length} new members`);
             }
@@ -82,7 +83,7 @@ class MeetupToken {
             }
         });
     }
-    issueTokensToMembers(memberMeetupIds, amount) {
+    issueTokensToMembers(memberMeetupIds, amount, reason) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // get list of members who have addresses in their meetup intro
@@ -93,7 +94,7 @@ class MeetupToken {
                 logger.debug(`${membersWithAddressesToIssue.length} of ${memberMeetupIds.length} members to be issued tokens have an address`);
                 // for each member, issue a token
                 for (let memberWithAddressesToIssue of membersWithAddressesToIssue) {
-                    yield this.token.issueTokens(memberWithAddressesToIssue.id, memberWithAddressesToIssue.address, amount);
+                    yield this.token.issueTokens(memberWithAddressesToIssue.address, amount, memberWithAddressesToIssue.id, reason);
                 }
                 logger.info(`Issued tokens to ${membersWithAddressesToIssue.length} new members`);
             }

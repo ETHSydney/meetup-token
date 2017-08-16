@@ -15,7 +15,7 @@ const meetupTokenOptions = {
     apiKey: process.env.MEETUP_KEY,
     urlname: 'SydEthereum',
     wsURL: "ws://localhost:8647",
-    contractAddress: '0xA45125D4eCb367ccD4C626ACFfB355CC4A96a32a',
+    contractAddress: '0x3D7bb122F0BddD971eDf355CFc9D26640313D4D2',
     contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991'
 };
 const meetupToken = new MeetupToken_1.default(meetupTokenOptions);

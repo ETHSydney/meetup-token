@@ -4,23 +4,32 @@ const testMemberAddress1 = '0xf55583ff8461db9dfbbe90b5f3324f2a290c3356';
 const testMemberAddress2 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
 
 const testContractOwner = '0x8ae386892b59bd2a7546a9468e8e847d61955991';
-const testContractAddress = '0xA45125D4eCb367ccD4C626ACFfB355CC4A96a32a';
+const testContractAddress = '0x3D7bb122F0BddD971eDf355CFc9D26640313D4D2';
+
+const accountPassword = 'meetup';
 
 const meetupToken = new Token("ws://localhost:8647",
     testContractAddress,
-    testContractOwner);
+    testContractOwner,
+    accountPassword);
 
-
-function testDeployContract()
+async function testDeployContract()
 {
-    meetupToken.deployContract(testContractOwner)
-        .then(contractAddress => {
-            console.log(`New deployed transferable meetup token contract address: ${contractAddress}`);
-        })
-        .catch(err => {console.log(`Failed to deploy a transferable meetup token. Error: ${err.message}`);});
+    try {
+        // TODO this has not yet been implemented in web3 1.0
+        //await meetupToken.unlockAccount(accountPassword);
+
+        const contractAddress = await meetupToken.deployContract(testContractOwner);
+
+        console.log(`New deployed transferable meetup token contract address: ${contractAddress}`);
+    }
+    catch (err)
+    {
+        console.log(`Failed to deploy a transferable meetup token. Error: ${err.message}`);
+    }
 }
 
-// testDeployContract();
+testDeployContract();
 
 async function testExistingContractIssue()
 {
@@ -62,7 +71,7 @@ async function testExistingContractIssue()
 
 }
 
-testExistingContractIssue();
+//testExistingContractIssue();
 
 // meetupToken.getIssuedMembers()
 //     .then(memberIds => {console.log(`Meetup members that have been issued a token: ${memberIds}`);})

@@ -40,7 +40,7 @@ export default class MeetupToken
 
     async issueTokensToNewMembers()
     {
-        const self = this;
+        const reason = 'newMember';
 
         try
         {
@@ -68,7 +68,7 @@ export default class MeetupToken
 
             for (let newMemberWithAddresses of newMembersWithAddresses)
             {
-                await this.token.issueTokens(newMemberWithAddresses.id, newMemberWithAddresses.address, this.issueAmounts['newMember']);
+                await this.token.issueTokens(newMemberWithAddresses.address, this.issueAmounts[reason], newMemberWithAddresses.id, reason);
             }
 
             logger.info(`Issued tokens to ${newMembersWithAddresses.length} new members`);
@@ -83,6 +83,7 @@ export default class MeetupToken
 
     async issueTokensToMembersAtEvent(eventId: number)
     {
+        const reason = 'attendEvent';
         try
         {
             // get list of members who attended a meetup event
@@ -103,7 +104,7 @@ export default class MeetupToken
             // for each member, issue a token
             for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent)
             {
-                await this.token.issueTokens(memberWithAddressesAtEvent.id, memberWithAddressesAtEvent.address, this.issueAmounts['attendEvent']);
+                await this.token.issueTokens(memberWithAddressesAtEvent.address, this.issueAmounts[reason], memberWithAddressesAtEvent.id, reason);
             }
 
             logger.info(`Issued tokens to ${membersWithAddressesAtEvent.length} new members`);
@@ -116,7 +117,7 @@ export default class MeetupToken
         }
     }
 
-    async issueTokensToMembers(memberMeetupIds: number[], amount: number)
+    async issueTokensToMembers(memberMeetupIds: number[], amount: number, reason: string)
     {
         try
         {
@@ -133,7 +134,7 @@ export default class MeetupToken
             // for each member, issue a token
             for (let memberWithAddressesToIssue of membersWithAddressesToIssue)
             {
-                await this.token.issueTokens(memberWithAddressesToIssue.id, memberWithAddressesToIssue.address, amount);
+                await this.token.issueTokens(memberWithAddressesToIssue.address, amount, memberWithAddressesToIssue.id, reason);
             }
 
             logger.info(`Issued tokens to ${membersWithAddressesToIssue.length} new members`);

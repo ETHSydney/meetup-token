@@ -83,7 +83,7 @@ contract ERC20Token is ERC20Interface
     
     /// @return Token symbol
     string sym;
-    string name;
+    string nam;
     
     // Token ownership mapping
     mapping (address => uint) balance;
@@ -100,7 +100,7 @@ contract ERC20Token is ERC20Interface
 
     function name() public constant returns (string)
     {
-        return name;
+        return nam;
     }
     
     // Using an explicit getter allows for function overloading    
@@ -163,28 +163,33 @@ contract TransferableMeetupToken is ERC20Token
     function TransferableMeetupToken(string _symbol, string _name)
     {
         sym = _symbol;
-        name = _name;
+        nam = _name;
     }
     
     event Issue(
-        uint indexed _meetupId,
+        address indexed _to,
+        uint256 _value,
+        string indexed _externalId,
+        string indexed _reason);
+
+    event Redeem(
         address indexed _to,
         uint256 _value);
 
-    function issue(uint _meetupId, address _addr, uint _amount) public
+    function issue(address _addr, uint _amount, string _externalId, string _reason) public
     {
         require(owner == msg.sender);
         totSupply += _amount;
         balance[_addr] += _amount;
-        Issue(_meetupId, _addr, _amount);
+        Issue(_addr, _amount, _externalId, _reason);
     }
     
-    function redeem( address _addr, uint _amount) public
+    function redeem(address _addr, uint _amount) public
     {
         require(owner == msg.sender);
         require(balance[_addr] >= _amount);
         totSupply -= _amount;
         balance[_addr] -= _amount;
-        Transfer(_addr, 0x0, _amount);
+        Redeem(_addr, _amount);
     }
 }
