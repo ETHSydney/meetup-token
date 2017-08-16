@@ -21,8 +21,9 @@ const meetupTokenOptions = {
 const meetupToken = new MeetupToken_1.default(meetupTokenOptions);
 function testIssueTokens() {
     return __awaiter(this, void 0, void 0, function* () {
-        //await meetupToken.issueTokensToNewMembers();
+        yield meetupToken.issueTokensToNewMembers();
         yield meetupToken.issueTokensToMembersAtEvent(237360125);
+        yield meetupToken.issueTokensToMembers([71274432, 196041355, 1111, 2223], 333);
     });
 }
 testIssueTokens();

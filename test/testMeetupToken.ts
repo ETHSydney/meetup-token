@@ -15,9 +15,11 @@ const meetupToken = new MeetupToken(meetupTokenOptions);
 
 async function testIssueTokens()
 {
-    //await meetupToken.issueTokensToNewMembers();
+    await meetupToken.issueTokensToNewMembers();
 
     await meetupToken.issueTokensToMembersAtEvent(237360125);
+
+    await meetupToken.issueTokensToMembers([71274432,196041355,1111,2223], 333);
 }
 
 testIssueTokens();

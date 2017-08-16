@@ -4,6 +4,7 @@ import Token from './token';
 import * as VError from 'verror';
 import * as logger from 'config-logger';
 import * as _ from 'underscore';
+import {MemberAddress} from './meetup';
 
 export interface IMeetupToken {
     apiKey: string,
@@ -49,12 +50,12 @@ export default class MeetupToken
             logger.debug(`${existingTokenHolders.length} members who have already received tokens in the past`);
 
             // get the list of members who have addresses in their Meetup intro
-            const membersWithAddresses: {id: number, address: string}[] = await this.meetup.extractMemberAddresses();
+            const membersWithAddresses: MemberAddress[] = await this.meetup.extractMemberAddresses();
 
             logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
 
             // get the list of members who have not yet been issued tokens
-            const newMembersWithAddresses: {id: number, address: string}[] = _.filter(membersWithAddresses, memberWithAddress =>
+            const newMembersWithAddresses: MemberAddress[] = _.filter(membersWithAddresses, memberWithAddress =>
             {
                 // select the members who have not already been issued tokens
                 return !_.contains(existingTokenHolders, existingTokenHolder =>
@@ -90,25 +91,14 @@ export default class MeetupToken
             logger.debug(`${membersAtEvent.length} members attended the Meetup event with id ${eventId}`);
 
             // get list of members who have addresses in their meetup intro
-            const membersWithAddresses: {id: number, address: string}[] = await this.meetup.extractMemberAddresses();
+            const membersWithAddresses: MemberAddress[] = await this.meetup.extractMemberAddresses();
 
             logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
 
             // get list of members with addresses who were at the meetup event
-            const membersWithAddressesAtEvent: {id: number, address: string}[] = [];
-            for (let memberWithAddress of membersWithAddresses)
-            {
-                for (let memberAtEvent of membersAtEvent)
-                {
-                    if (memberWithAddress.id == memberAtEvent)
-                    {
-                        membersWithAddressesAtEvent.push(memberWithAddress);
-                        break;
-                    }
-                }
-            }
+            const membersWithAddressesAtEvent = MeetupToken.filterMembersWithAddresses(membersWithAddresses, membersAtEvent);
 
-            logger.debug(`${membersWithAddressesAtEvent} members at the event with ${eventId} has an address`);
+            logger.debug(`${membersWithAddressesAtEvent.length} members at the event with ${eventId} has an address`);
 
             // for each member, issue a token
             for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent)
@@ -126,28 +116,27 @@ export default class MeetupToken
         }
     }
 
-    async issueTokensToMembers(memberMeetupIds: string[], amount: number)
+    async issueTokensToMembers(memberMeetupIds: number[], amount: number)
     {
         try
         {
             // get list of members who have addresses in their meetup intro
-            const membersWithAddresses: {id: number, address: string}[] = await this.meetup.extractMemberAddresses();
+            const membersWithAddresses: MemberAddress[] = await this.meetup.extractMemberAddresses();
+
+            logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
 
             // get list of members with addresses who are to be issued tokens
-            const membersWithAddressesToIssue = _.filter(membersWithAddresses, memberWithAddress =>
-            {
-                // select the members to be issued tokens that have addresses configured
-                return _.contains(memberMeetupIds, memberMeetupId =>
-                {
-                    memberWithAddress.id == memberMeetupId;
-                });
-            });
+            const membersWithAddressesToIssue = MeetupToken.filterMembersWithAddresses(membersWithAddresses, memberMeetupIds);
+
+            logger.debug(`${membersWithAddressesToIssue.length} of ${memberMeetupIds.length} members to be issued tokens have an address`);
 
             // for each member, issue a token
             for (let memberWithAddressesToIssue of membersWithAddressesToIssue)
             {
                 await this.token.issueTokens(memberWithAddressesToIssue.id, memberWithAddressesToIssue.address, amount);
             }
+
+            logger.info(`Issued tokens to ${membersWithAddressesToIssue.length} new members`);
         }
         catch (err)
         {
@@ -155,5 +144,23 @@ export default class MeetupToken
             logger.error(error.stack);
             throw error;
         }
+    }
+
+    private static filterMembersWithAddresses(membersWithAddresses: MemberAddress[], members: number[]): MemberAddress[]
+    {
+        const membersWithAddressesAtEvent: MemberAddress[] = [];
+        for (let memberWithAddress of membersWithAddresses)
+        {
+            for (let member of members)
+            {
+                if (memberWithAddress.id == member)
+                {
+                    membersWithAddressesAtEvent.push(memberWithAddress);
+                    break;
+                }
+            }
+        }
+
+        return membersWithAddressesAtEvent;
     }
 }

@@ -4,7 +4,8 @@ import * as VError from 'verror';
 import {extractEthAddress} from './ethUtils';
 import * as logger from 'config-logger';
 
-declare type MemberAddress = {id: number, address: string};
+export interface MemberAddress {id: number, address: string}
+
 declare type MeetupProfile = {
     id: number,
     group_profile: {

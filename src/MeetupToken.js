@@ -67,16 +67,8 @@ class MeetupToken {
                 const membersWithAddresses = yield this.meetup.extractMemberAddresses();
                 logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
                 // get list of members with addresses who were at the meetup event
-                const membersWithAddressesAtEvent = [];
-                for (let memberWithAddress of membersWithAddresses) {
-                    for (let memberAtEvent of membersAtEvent) {
-                        if (memberWithAddress.id == memberAtEvent) {
-                            membersWithAddressesAtEvent.push(memberWithAddress);
-                            break;
-                        }
-                    }
-                }
-                logger.debug(`${membersWithAddressesAtEvent} members at the event with ${eventId} has an address`);
+                const membersWithAddressesAtEvent = MeetupToken.filterMembersWithAddresses(membersWithAddresses, membersAtEvent);
+                logger.debug(`${membersWithAddressesAtEvent.length} members at the event with ${eventId} has an address`);
                 // for each member, issue a token
                 for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent) {
                     yield this.token.issueTokens(memberWithAddressesAtEvent.id, memberWithAddressesAtEvent.address, this.issueAmounts['attendEvent']);
@@ -95,17 +87,15 @@ class MeetupToken {
             try {
                 // get list of members who have addresses in their meetup intro
                 const membersWithAddresses = yield this.meetup.extractMemberAddresses();
+                logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
                 // get list of members with addresses who are to be issued tokens
-                const membersWithAddressesToIssue = _.filter(membersWithAddresses, memberWithAddress => {
-                    // select the members to be issued tokens that have addresses configured
-                    return _.contains(memberMeetupIds, memberMeetupId => {
-                        memberWithAddress.id == memberMeetupId;
-                    });
-                });
+                const membersWithAddressesToIssue = MeetupToken.filterMembersWithAddresses(membersWithAddresses, memberMeetupIds);
+                logger.debug(`${membersWithAddressesToIssue.length} of ${memberMeetupIds.length} members to be issued tokens have an address`);
                 // for each member, issue a token
                 for (let memberWithAddressesToIssue of membersWithAddressesToIssue) {
                     yield this.token.issueTokens(memberWithAddressesToIssue.id, memberWithAddressesToIssue.address, amount);
                 }
+                logger.info(`Issued tokens to ${membersWithAddressesToIssue.length} new members`);
             }
             catch (err) {
                 const error = new VError(err, `Could not issue ${amount} tokens to members with ids: ${memberMeetupIds}`);
@@ -113,6 +103,18 @@ class MeetupToken {
                 throw error;
             }
         });
+    }
+    static filterMembersWithAddresses(membersWithAddresses, members) {
+        const membersWithAddressesAtEvent = [];
+        for (let memberWithAddress of membersWithAddresses) {
+            for (let member of members) {
+                if (memberWithAddress.id == member) {
+                    membersWithAddressesAtEvent.push(memberWithAddress);
+                    break;
+                }
+            }
+        }
+        return membersWithAddressesAtEvent;
     }
 }
 exports.default = MeetupToken;
