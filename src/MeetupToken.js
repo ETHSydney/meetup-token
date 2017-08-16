@@ -67,12 +67,16 @@ class MeetupToken {
                 const membersWithAddresses = yield this.meetup.extractMemberAddresses();
                 logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
                 // get list of members with addresses who were at the meetup event
-                const membersWithAddressesAtEvent = _.filter(membersWithAddresses, memberWithAddress => {
-                    // select the members at the event that have addresses
-                    return _.contains(membersAtEvent, memberAtEvent => {
-                        memberWithAddress.id == memberAtEvent;
-                    });
-                });
+                const membersWithAddressesAtEvent = [];
+                for (let memberWithAddress of membersWithAddresses) {
+                    for (let memberAtEvent of membersAtEvent) {
+                        if (memberWithAddress.id == memberAtEvent) {
+                            membersWithAddressesAtEvent.push(memberWithAddress);
+                            break;
+                        }
+                    }
+                }
+                logger.debug(`${membersWithAddressesAtEvent} members at the event with ${eventId} has an address`);
                 // for each member, issue a token
                 for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent) {
                     yield this.token.issueTokens(memberWithAddressesAtEvent.id, memberWithAddressesAtEvent.address, this.issueAmounts['attendEvent']);

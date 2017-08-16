@@ -95,14 +95,20 @@ export default class MeetupToken
             logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
 
             // get list of members with addresses who were at the meetup event
-            const membersWithAddressesAtEvent = _.filter(membersWithAddresses, memberWithAddress =>
+            const membersWithAddressesAtEvent: {id: number, address: string}[] = [];
+            for (let memberWithAddress of membersWithAddresses)
             {
-                // select the members at the event that have addresses
-                return _.contains(membersAtEvent, memberAtEvent =>
+                for (let memberAtEvent of membersAtEvent)
                 {
-                    memberWithAddress.id == memberAtEvent;
-                });
-            });
+                    if (memberWithAddress.id == memberAtEvent)
+                    {
+                        membersWithAddressesAtEvent.push(memberWithAddress);
+                        break;
+                    }
+                }
+            }
+
+            logger.debug(`${membersWithAddressesAtEvent} members at the event with ${eventId} has an address`);
 
             // for each member, issue a token
             for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent)

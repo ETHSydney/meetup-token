@@ -17,7 +17,7 @@ async function testIssueTokens()
 {
     //await meetupToken.issueTokensToNewMembers();
 
-    await meetupToken.issueTokensToMembersAtEvent(237360133);
+    await meetupToken.issueTokensToMembersAtEvent(237360125);
 }
 
 testIssueTokens();

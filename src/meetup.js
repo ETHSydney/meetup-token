@@ -102,30 +102,32 @@ class Meetup {
     }
     getMembersAtEvent(event_id) {
         const self = this;
+        const description = `event RSVPs for ${self.urlname} Meetup event with id ${event_id}`;
         return new Promise((resolve, reject) => {
             this.meetup.getEventRSVPs({
                 'urlname': self.urlname,
                 "event_id": event_id
             }, function (err, rsvps) {
                 if (err) {
-                    const error = new VError(`Get event RSVPs for meetup ${self.urlname} with event id ${event_id} returned error: ${err}`);
+                    const error = new VError(`Get ${description} returned error: ${err}`);
                     logger.error(error.stack);
                     return reject(error);
                 }
                 else if (!rsvps || !Array.isArray(rsvps)) {
-                    const error = new VError(`Get event RSVPs for urlname ${self.urlname} and event id ${event_id} did not return a response that was an Array`);
+                    const error = new VError(`Get ${description} did not return a response that was an Array`);
                     logger.error(error.stack);
                     return reject(error);
                 }
                 else {
                     logger.trace(rsvps);
-                    logger.info(`getMembersAtEvent for urlname ${self.urlname} and event id ${event_id} returned ${rsvps.length} RSVPs`);
+                    logger.debug(`Returned ${rsvps.length} ${description}`);
                     const rsvpMembers = [];
                     rsvps.forEach(rsvp => {
                         if (rsvp.response == 'yes' && rsvp.member && rsvp.member.id) {
                             rsvpMembers.push(rsvp.member.id);
                         }
                     });
+                    logger.debug(`${rsvpMembers.length} ${description}`);
                     resolve(rsvpMembers);
                 }
             });
