@@ -6,9 +6,10 @@ import * as logger from 'config-logger';
 export default class TransferableMeetupToken
 {
     readonly web3: any;
-    readonly jsonInterface = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"}],"name":"redeem","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_externalId","type":"string"},{"name":"_reason","type":"string"}],"name":"issue","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining_","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_symbol","type":"string"},{"name":"_name","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"},{"indexed":true,"name":"_externalId","type":"string"},{"indexed":true,"name":"_reason","type":"string"}],"name":"Issue","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"}];
-    readonly binary = '0x606060405260058054600160a060020a03191633600160a060020a0316179055341561002a57600080fd5b6040516109ee3803806109ee8339810160405280805182019190602001805190910190505b600182805161006292916020019061007f565b50600281805161007692916020019061007f565b505b505061011f565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100c057805160ff19168380011785556100ed565b828001600101855582156100ed579182015b828111156100ed5782518255916020019190600101906100d2565b5b506100fa9291506100fe565b5090565b61011c91905b808211156100fa5760008155600101610104565b5090565b90565b6108c08061012e6000396000f300606060405236156100a15763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde0381146100a6578063095ea7b31461013157806318160ddd146101555780631e9a69501461017a57806323b872dd1461019e57806364f018d8146101c857806370a082311461027157806395d89b41146102a2578063a9059cbb1461032d578063dd62ed3e14610351575b600080fd5b34156100b157600080fd5b6100b9610388565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f65780820151818401525b6020016100dd565b50505050905090810190601f1680156101235780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561013c57600080fd5b610153600160a060020a0360043516602435610431565b005b341561016057600080fd5b610168610496565b60405190815260200160405180910390f35b341561018557600080fd5b610153600160a060020a036004351660243561049d565b005b34156101a957600080fd5b610153600160a060020a036004358116906024351660443561053f565b005b34156101d357600080fd5b61015360048035600160a060020a03169060248035919060649060443590810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284378201915050505050509190803590602001908201803590602001908080601f0160208091040260200160405190810160405281815292919060208401838380828437509496506105b095505050505050565b005b341561027c57600080fd5b610168600160a060020a03600435166106ed565b60405190815260200160405180910390f35b34156102ad57600080fd5b6100b961070c565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f65780820151818401525b6020016100dd565b50505050905090810190601f1680156101235780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561033857600080fd5b610153600160a060020a03600435166024356107b5565b005b341561035c57600080fd5b610168600160a060020a03600435811690602435166107c5565b60405190815260200160405180910390f35b610390610882565b60028054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104265780601f106103fb57610100808354040283529160200191610426565b820191906000526020600020905b81548152906001019060200180831161040957829003601f168201915b505050505090505b90565b600160a060020a03338116600081815260046020908152604080832094871680845294909152908190208490557f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259084905190815260200160405180910390a35b5050565b6000545b90565b60055433600160a060020a039081169116146104b857600080fd5b600160a060020a038216600090815260036020526040902054819010156104de57600080fd5b600080548290038155600160a060020a038316808252600360205260409182902080548490039055907f222838db2794d11532d940e8dec38ae307ed0b63cd97c233322e221f998767a69083905190815260200160405180910390a25b5050565b600160a060020a038084166000908152600460209081526040808320339094168352929052205481111561057257600080fd5b600160a060020a03808416600090815260046020908152604080832033909416835292905220805482900390556105aa8383836107f2565b5b505050565b60055433600160a060020a039081169116146105cb57600080fd5b6000805484018155600160a060020a038516815260036020526040908190208054850190558190518082805190602001908083835b6020831061062057805182525b601f199092019160209182019101610600565b6001836020036101000a03801982511681845116179092525050509190910192506040915050518091039020826040518082805190602001908083835b6020831061067d57805182525b601f19909201916020918201910161065d565b6001836020036101000a0380198251168184511617909252505050919091019250604091505051809103902085600160a060020a03167ff852d0a3cf181ff3367de4646a22f9c0ea924ae0b367c74e07079a897f313c3c8660405190815260200160405180910390a45b50505050565b600160a060020a0381166000908152600360205260409020545b919050565b610714610882565b60018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104265780601f106103fb57610100808354040283529160200191610426565b820191906000526020600020905b81548152906001019060200180831161040957829003601f168201915b505050505090505b90565b6104923383836107f2565b5b5050565b600160a060020a038083166000908152600460209081526040808320938516835292905220545b92915050565b600160a060020a03831660009081526003602052604090205481111561081757600080fd5b600160a060020a038084166000818152600360205260408082208054869003905592851680825290839020805485019055917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9084905190815260200160405180910390a35b505050565b602060405190810160405260008152905600a165627a7a723058205289845680cc2c953b68c33bdbb47eaea6c80c3be419ebcb0b46527e96dc64d10029';
+    readonly jsonInterface = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"}],"name":"redeem","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_externalId","type":"string"},{"name":"_reason","type":"string"}],"name":"issue","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining_","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_symbol","type":"string"},{"name":"_name","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":true,"name":"externalId","type":"string"},{"indexed":true,"name":"reason","type":"string"}],"name":"Issue","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"}];
+    readonly binary = '0x606060405260058054600160a060020a03191633600160a060020a0316179055341561002a57600080fd5b604051610a09380380610a098339810160405280805182019190602001805190910190505b600182805161006292916020019061007f565b50600281805161007692916020019061007f565b505b505061011f565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100c057805160ff19168380011785556100ed565b828001600101855582156100ed579182015b828111156100ed5782518255916020019190600101906100d2565b5b506100fa9291506100fe565b5090565b61011c91905b808211156100fa5760008155600101610104565b5090565b90565b6108db8061012e6000396000f300606060405236156100a15763ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166306fdde0381146100a6578063095ea7b31461013157806318160ddd146101555780631e9a69501461017a57806323b872dd1461019e57806364f018d8146101c857806370a082311461027157806395d89b41146102a2578063a9059cbb1461032d578063dd62ed3e14610351575b600080fd5b34156100b157600080fd5b6100b9610388565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f65780820151818401525b6020016100dd565b50505050905090810190601f1680156101235780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561013c57600080fd5b610153600160a060020a0360043516602435610431565b005b341561016057600080fd5b610168610496565b60405190815260200160405180910390f35b341561018557600080fd5b610153600160a060020a036004351660243561049d565b005b34156101a957600080fd5b610153600160a060020a036004358116906024351660443561053f565b005b34156101d357600080fd5b61015360048035600160a060020a03169060248035919060649060443590810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284378201915050505050509190803590602001908201803590602001908080601f0160208091040260200160405190810160405281815292919060208401838380828437509496506105b095505050505050565b005b341561027c57600080fd5b610168600160a060020a0360043516610708565b60405190815260200160405180910390f35b34156102ad57600080fd5b6100b9610727565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f65780820151818401525b6020016100dd565b50505050905090810190601f1680156101235780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561033857600080fd5b610153600160a060020a03600435166024356107d0565b005b341561035c57600080fd5b610168600160a060020a03600435811690602435166107e0565b60405190815260200160405180910390f35b61039061089d565b60028054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104265780601f106103fb57610100808354040283529160200191610426565b820191906000526020600020905b81548152906001019060200180831161040957829003601f168201915b505050505090505b90565b600160a060020a03338116600081815260046020908152604080832094871680845294909152908190208490557f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259084905190815260200160405180910390a35b5050565b6000545b90565b60055433600160a060020a039081169116146104b857600080fd5b600160a060020a038216600090815260036020526040902054819010156104de57600080fd5b600080548290038155600160a060020a038316808252600360205260409182902080548490039055907f222838db2794d11532d940e8dec38ae307ed0b63cd97c233322e221f998767a69083905190815260200160405180910390a25b5050565b600160a060020a038084166000908152600460209081526040808320339094168352929052205481111561057257600080fd5b600160a060020a03808416600090815260046020908152604080832033909416835292905220805482900390556105aa83838361080d565b5b505050565b60055433600160a060020a039081169116146105cb57600080fd5b6000805484018155600160a060020a0385168082526003602052604091829020805486019055907ff852d0a3cf181ff3367de4646a22f9c0ea924ae0b367c74e07079a897f313c3c9085908590859051808481526020018060200180602001838103835285818151815260200191508051906020019080838360005b838110156106605780820151818401525b602001610647565b50505050905090810190601f16801561068d5780820380516001836020036101000a031916815260200191505b50838103825284818151815260200191508051906020019080838360005b838110156106c45780820151818401525b6020016106ab565b50505050905090810190601f1680156106f15780820380516001836020036101000a031916815260200191505b509550505050505060405180910390a25b50505050565b600160a060020a0381166000908152600360205260409020545b919050565b61072f61089d565b60018054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104265780601f106103fb57610100808354040283529160200191610426565b820191906000526020600020905b81548152906001019060200180831161040957829003601f168201915b505050505090505b90565b61049233838361080d565b5b5050565b600160a060020a038083166000908152600460209081526040808320938516835292905220545b92915050565b600160a060020a03831660009081526003602052604090205481111561083257600080fd5b600160a060020a038084166000818152600360205260408082208054869003905592851680825290839020805485019055917fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef9084905190815260200160405180910390a35b505050565b602060405190810160405260008152905600a165627a7a7230582047a35efd45dddabe481dc25ada54352663fe0c0ec94be72dbaf495857a04c82a0029';
     contract: any;
+    contractAddress: string;
     contractOwner: string;
     accountPassword: string;
 
@@ -17,31 +18,38 @@ export default class TransferableMeetupToken
 
     transactions: { [transactionHash: string] : number; } = {};
 
-    constructor(readonly wsURL: string, contractAddress: string, contractOwner: string, accountPassword: string)
+    constructor(readonly wsURL: string, contractAddress?: string, contractOwner?: string, accountPassword: string = "")
     {
+        this.contractAddress = contractAddress;
         this.contractOwner = contractOwner;
         this.accountPassword = accountPassword;
 
         this.web3 = new Web3(wsURL);
-        this.contract = new this.web3.eth.Contract(this.jsonInterface, contractAddress, {
-            from: contractOwner
-        });
+
+        if (contractAddress && contractOwner)
+        {
+            this.contract = new this.web3.eth.Contract(this.jsonInterface, contractAddress, {
+                from: contractOwner
+            });
+        }
     }
 
     // deploy a new contract
-    deployContract(fromAddress: string, gas = 800000, gasPrice = 4000000000): Promise<string>
+    deployContract(contractOwner: string, gas = 800000, gasPrice = 4000000000): Promise<string>
     {
         const self = this;
+        this.contractOwner = contractOwner;
 
         const description = `deploy transferable meetup token from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
 
-        return new Promise<string>((resolve, reject) => {
-            self.contract.deploy({
+        return new Promise<string>((resolve, reject) =>
+        {
+            self.contract = self.contract.deploy({
                 data: self.binary,
                 arguments: ['TMT', 'Transferable Meetup Token']
             })
             .send({
-                from: fromAddress,
+                from: contractOwner,
                 gas: gas,
                 gasPrice: gasPrice
             })
@@ -53,12 +61,12 @@ export default class TransferableMeetupToken
             .on('receipt', (receipt: object) => {
                 logger.debug(`Created contract with address ${receipt.contractAddress} using ${receipt.gasUsed} gas for ${description}`);
 
-                self.contract.options.address = receipt.contractAddress;
+                self.contractAddress = receipt.contractAddress;
                 resolve(receipt.contractAddress);
             })
             .on('confirmation', (confirmationNumber: number, receipt: object) =>
             {
-                logger.debug(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
+                logger.trace(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
 
                 self.transactions[receipt.transactionHash] = confirmationNumber;
             })
@@ -74,7 +82,6 @@ export default class TransferableMeetupToken
     issueTokens(toAddress: string, amount: number, externalId: number, reason: string, _gas?: number, _gasPrice?: number): Promise<string>
     {
         const self = this;
-        let resolved = false;
 
         const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contract._address}, external id ${externalId} and reason ${reason}`;
 
@@ -107,7 +114,7 @@ export default class TransferableMeetupToken
             })
             .on('confirmation', (confirmationNumber: number, receipt: object) =>
             {
-                logger.debug(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
+                logger.trace(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
 
                 self.transactions[receipt.transactionHash] = confirmationNumber;
             })
@@ -125,7 +132,6 @@ export default class TransferableMeetupToken
     redeemTokens(toAddress: string, amount: number, _gas?: number, _gasPrice?: number): Promise<string>
     {
         const self = this;
-        let resolved = false;
 
         const gas = _gas || self.defaultGas;
         const gasPrice = _gasPrice || self.defaultGasPrice;
@@ -156,7 +162,7 @@ export default class TransferableMeetupToken
             })
             .on('confirmation', (confirmationNumber: number, receipt: object) =>
             {
-                logger.debug(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
+                logger.trace(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
                 self.transactions[receipt.transactionHash] = confirmationNumber;
             })
             .on('error', (err: Error) =>
@@ -244,18 +250,33 @@ export default class TransferableMeetupToken
         }
     }
 
-    async getIssuedMembers(): Promise<number[]>
+    async getIssueEvents(reason?: string): Promise<string[]>
     {
         const description = `get member ids from past Issue events of contract at address ${this.contract._address}`;
 
+        const options = {
+            fromBlock: 0
+        };
+
+        let whereProperties: object;
+        if (reason)
+        {
+            whereProperties = {'reason': reason}
+        }
+        else
+        {
+            whereProperties = {};
+        }
+
         try
         {
-            const events = await this.contract.getPastEvents('Issue', {
-                fromBlock: 0
-            });
+            const events = await this.contract.getPastEvents('Issue', options);
 
-            const meetupIds: number[] = _.chain(events)
-                .map(event => {return event.returnValues["0"];})
+            logger.debug(`Got ${events.length} past Issue events`);
+
+            const meetupIds: string[] = _.chain(events)
+                .where(whereProperties)
+                .map(event => {return event.returnValues.externalId;})
                 .uniq()
                 .value();
 

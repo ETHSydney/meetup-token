@@ -24,8 +24,6 @@ The public key can be anywhere in the intro field as the program will just selec
 
 When a member joins the meetup group and have entered their Ethereum address in their intro, a number of tokens will be issued to them. When they attend a meetup more tokens will be issued to them. The amount of tokens issued is configurable and is up to the meetup group to decide their rules.
 
-# Who?
-
 # Tokens
 There will be two types of tokens for the meetup. One is transferrable to any Ethereum address and is not linked to the meetup identity, the other is non transferrable and links with the smart contract the meetup.com identity.
 https://github.com/bokkypoobah/TokenTrader/wiki/Supported-ERC20-Tokens

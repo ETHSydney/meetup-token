@@ -26,15 +26,15 @@ contract ERC20Interface
 /* Events */
     // Triggered when tokens are transferred.
     event Transfer(
-        address indexed _from,
-        address indexed _to,
-        uint256 _value);
+        address indexed from,
+        address indexed to,
+        uint256 value);
 
     // Triggered whenever approve(address _spender, uint256 _value) is called.
     event Approval(
-        address indexed _owner,
-        address indexed _spender,
-        uint256 _value);
+        address indexed owner,
+        address indexed spender,
+        uint256 value);
 
 /* Modifiers */
 
@@ -167,14 +167,14 @@ contract TransferableMeetupToken is ERC20Token
     }
     
     event Issue(
-        address indexed _to,
-        uint256 _value,
-        string indexed _externalId,
-        string indexed _reason);
+        address indexed to,
+        uint256 value,
+        string externalId,
+        string reason);
 
     event Redeem(
-        address indexed _to,
-        uint256 _value);
+        address indexed to,
+        uint256 value);
 
     function issue(address _addr, uint _amount, string _externalId, string _reason) public
     {
