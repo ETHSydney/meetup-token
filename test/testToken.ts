@@ -5,14 +5,14 @@ const testMemberAddress1 = '0xf55583ff8461db9dfbbe90b5f3324f2a290c3356';
 const testMemberAddress2 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
 const testMemberAddress3 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
 
-const testContractOwner = '0x8ae386892b59bd2a7546a9468e8e847d61955991';
-const testContractAddress = '0x5DafbBe70ece05c938862a8301882E81612b46b5';
+const testContractOwner = '0xd728cee2648a642fda9dc1218d2d5746848400ba';
+const testContractAddress = '0x78bb290147d001be464491315d991ded1f248d8a';
 
 const accountPassword = 'meetup';
 
 const meetupToken = new Token("ws://localhost:8647",
-    testContractAddress,
     testContractOwner,
+    testContractAddress,
     accountPassword);
 
 async function testDeployContract()
@@ -35,41 +35,40 @@ async function testDeployContract()
 
 async function testEvents()
 {
-    const newMeetupToken = new Token("ws://localhost:8647",
-        testContractAddress,
-        testContractOwner,
-        accountPassword);
 
     try {
-
-
+        const newMeetupToken = new Token("ws://localhost:8647",
+            testContractOwner,
+            null,
+            //testContractAddress,
+            accountPassword);
 
         // TODO this has not yet been implemented in web3 1.0
-        //await meetupToken.unlockAccount(accountPassword);
+        //await newMeetupToken.unlockAccount(accountPassword);
 
-        //const contractAddress = await meetupToken.deployContract(testContractOwner);
-        const contractAddress = '0xE63850AD37c8A72814e435f94c2E4c1Ad640af80';
+        const contractAddress = await newMeetupToken.deployContract(testContractOwner);
         console.log(`New deployed transferable meetup token contract address: ${contractAddress}`);
 
-        const transactionsHash1 = await meetupToken.issueTokens(testMemberAddress1, 10, 123456789, 'newMember');
+        const transactionsHash1 = await newMeetupToken.issueTokens(testMemberAddress1, 10, "123456789", 'newMember');
         console.log(`Issue tokens hash ${transactionsHash1}`);
 
-        const transactionsHash2 = await meetupToken.issueTokens(testMemberAddress1, 20, 123456789, 'attendEvent');
-        const transactionsHash3 = await meetupToken.issueTokens(testMemberAddress1, 30, 123456789, 'speakAtEvent');
+        const transactionsHash2 = await newMeetupToken.issueTokens(testMemberAddress1, 20, "123456789", 'attendEvent');
+        const transactionsHash3 = await newMeetupToken.issueTokens(testMemberAddress1, 30, "123456789", 'speakAtEvent');
         console.log(`Transaction hashes from tokens issued to first address: ${transactionsHash1} ${transactionsHash2} ${transactionsHash3}`);
 
-        await meetupToken.issueTokens(testMemberAddress2, 10, 987654321, 'newMember');
-        await meetupToken.issueTokens(testMemberAddress3, 20, 987654321, 'attendEvent');
+        await newMeetupToken.issueTokens(testMemberAddress2, 10, "987654321", 'newMember');
+        await newMeetupToken.issueTokens(testMemberAddress3, 20, "987654321", 'attendEvent');
+        await newMeetupToken.issueTokens(testMemberAddress3, 20, "111111111", 'attendEvent');
         console.log(`Tokens issued to second address`);
 
-        const allEvents = await meetupToken.getIssueEvents();
-        console.log(`Got ${allEvents.length} all issued events`);
+        const externalIdsFromAllEvents = await newMeetupToken.getIssueEvents();
+        console.log(`Got ${externalIdsFromAllEvents.length} unique external ids all Issue events`);
 
-        const newMemberEvents = await meetupToken.getIssueEvents('newMember');
-        console.log(`Got ${newMemberEvents.length} newMember issued events`);
+        const externalIdsFromNewMemberEvents = await newMeetupToken.getIssueEvents('newMember');
+        console.log(`Got ${externalIdsFromNewMemberEvents.length} unique external ids from newMember Issue events`);
 
-        assert.equal(allEvents.length, 5);
-        assert.equal(newMemberEvents.length, 2);
+        assert.equal(externalIdsFromAllEvents.length, 3);
+        assert.equal(externalIdsFromNewMemberEvents.length, 2);
     }
     catch (err)
     {
@@ -86,42 +85,39 @@ async function testExistingContractIssue()
         const symbol: string = await meetupToken.getSymbol();
         console.log(`symbol = ${symbol}`);
 
-
         const name: string = await meetupToken.getName();
         console.log(`name = ${name}`);
 
         const totalSupply: number = await meetupToken.getTotalSupply();
         console.log(`total supply = ${totalSupply}`);
 
-        let testMemberBalance1: number = await meetupToken.getBalanceOf(testMemberAddress1);
-        console.log(`first member balance before issue = ${testMemberBalance1}`);
+        const testMemberBalance1BeforeIssue: number = await meetupToken.getBalanceOf(testMemberAddress1);
+        console.log(`first member balance before issue = ${testMemberBalance1BeforeIssue}`);
         let testMemberBalance2: number = await meetupToken.getBalanceOf(testMemberAddress2);
         console.log(`second member balance before issue = ${testMemberBalance2}`);
 
-        const transactionsHash1 = await meetupToken.issueTokens(testMemberAddress1, 111, 123456789, 'newMember');
+        const transactionsHash1 = await meetupToken.issueTokens(testMemberAddress1, 111, "123456789", 'newMember');
         console.log(`Transaction hash from token issue: ${transactionsHash1}`);
 
-        const transactionsHash2 = await meetupToken.issueTokens(testMemberAddress2, 222, 987654321, 'newMember');
+        const transactionsHash2 = await meetupToken.issueTokens(testMemberAddress2, 222, "987654321", 'newMember');
         console.log(`Transaction hash from token issue: ${transactionsHash2}`);
 
-        testMemberBalance1 = await meetupToken.getBalanceOf(testMemberAddress1);
-        console.log(`first member balance after issue = ${testMemberBalance1}`);
+        const testMemberBalance1AfterIssue: number = await meetupToken.getBalanceOf(testMemberAddress1);
+        console.log(`first member balance after issue = ${testMemberBalance1AfterIssue}`);
+
+        assert.equal(testMemberBalance1AfterIssue, testMemberBalance1BeforeIssue + 111);
 
         const transactionsHash3 = await meetupToken.redeemTokens(testMemberAddress1, 11);
         console.log(`Transaction hash from token redeem: ${transactionsHash3}`);
 
-        testMemberBalance1 = await meetupToken.getBalanceOf(testMemberAddress1);
-        console.log(`first member balance after redeem = ${testMemberBalance1}`);
+        const testMemberBalance1AfterRedeem: number = await meetupToken.getBalanceOf(testMemberAddress1);
+        console.log(`first member balance after redeem = ${testMemberBalance1AfterRedeem}`);
+
+        assert.equal(testMemberBalance1AfterRedeem,testMemberBalance1BeforeIssue + 111 - 11);
     }
     catch (err) {
         console.log(`Failed testExistingContractIssue. Error: ${err.message}`);
     }
-
 }
 
 //testExistingContractIssue();
-//
-// meetupToken.getIssueEvents()
-//     .then(memberIds => {console.log(`Meetup members that have been issued a token: ${memberIds}`);})
-//     .catch(err => {console.log(`Failed to get issued members. Error: ${err.message}`);});
-
