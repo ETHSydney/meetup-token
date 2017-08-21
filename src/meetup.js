@@ -21,6 +21,7 @@ class Meetup {
         this.apiLimit = 5;
         this.extractAddressFromText = ethUtils_1.extractEthAddress;
         this.meetup = new MeetupApi({ key: apiKey });
+        logger.debug(`Instanciated Meetup`);
     }
     getMemberNumbers() {
         const self = this;
@@ -104,7 +105,7 @@ class Meetup {
         const self = this;
         const description = `event RSVPs for ${self.urlname} Meetup event with id ${event_id}`;
         return new Promise((resolve, reject) => {
-            this.meetup.getEventRSVPs({
+            self.meetup.getEventRSVPs({
                 'urlname': self.urlname,
                 "event_id": event_id
             }, function (err, rsvps) {
@@ -124,7 +125,7 @@ class Meetup {
                     const rsvpMembers = [];
                     rsvps.forEach(rsvp => {
                         if (rsvp.response == 'yes' && rsvp.member && rsvp.member.id) {
-                            rsvpMembers.push(rsvp.member.id);
+                            rsvpMembers.push(rsvp.member.id.toString());
                         }
                     });
                     logger.debug(`${rsvpMembers.length} ${description}`);

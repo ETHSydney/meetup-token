@@ -14,14 +14,33 @@ const meetupTokenOptions = {
 const meetupToken = new MeetupToken(meetupTokenOptions);
 
 async function testIssueTokens() {
-    //await meetupToken.issueTokensToNewMembers();
+    await meetupToken.issueTokensToNewMembers();
 
-    //await meetupToken.issueTokensToMembersAtEvent(237360125);
-
-    //await meetupToken.issueTokensToMembers([71274432,196041355,1111,2223], 333);
+    await meetupToken.issueTokensToMembersAtEvent(237360125);
 
     const members = await meetupToken.token.getIssueEvents();
     console.log(`Members with issued tokens ${members}`);
 }
 
 testIssueTokens();
+
+const membersList = [{id: 123, address: "0x123"}, {id: 345, address: "0x345"}, {id: 567, address: "0x567"}, {id: 111, address: "0x111"} ];
+const filterMembers = ["123", "987", "567"];
+
+function testInFilter()
+{
+    const results = MeetupToken.filterMembersWithAddressesInMembersFilter(membersList, filterMembers);
+
+    assert.deepEqual(results, [{id: 123, address: "0x123"}, {id: 567, address: "0x567"}]);
+}
+
+testInFilter();
+
+function testNotInFilter()
+{
+    const results = MeetupToken.filterMembersWithAddressesNotInMembersFilter(membersList, filterMembers);
+
+    assert.deepEqual(results, [{id: 345, address: "0x345"}, {id: 111, address: "0x111"}]);
+}
+
+testNotInFilter();

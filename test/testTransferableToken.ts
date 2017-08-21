@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import Token from '../src/token';
+import Token from '../src/transferableToken';
 
 const testMemberAddress1 = '0xf55583ff8461db9dfbbe90b5f3324f2a290c3356';
 const testMemberAddress2 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
@@ -23,7 +23,7 @@ async function testDeployContract()
 
         const contractAddress = await meetupToken.deployContract(testContractOwner);
 
-        console.log(`New deployed transferable meetup token contract address: ${contractAddress}`);
+        console.log(`Successfully deployed transferable meetup token to contract address: ${contractAddress}`);
     }
     catch (err)
     {
@@ -31,7 +31,7 @@ async function testDeployContract()
     }
 }
 
-//testDeployContract();
+testDeployContract();
 
 async function testEvents()
 {
@@ -120,4 +120,4 @@ async function testExistingContractIssue()
     }
 }
 
-//testExistingContractIssue();
+testExistingContractIssue();

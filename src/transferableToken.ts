@@ -3,7 +3,7 @@ import * as VError from 'verror';
 import * as _ from "underscore";
 import * as logger from 'config-logger';
 
-export default class TransferableMeetupToken
+export default class TransferableToken
 {
     readonly web3: any;
     readonly jsonInterface = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"}],"name":"redeem","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"},{"name":"_amount","type":"uint256"},{"name":"_externalId","type":"string"},{"name":"_reason","type":"string"}],"name":"issue","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_addr","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining_","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_symbol","type":"string"},{"name":"_name","type":"string"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"},{"indexed":false,"name":"externalId","type":"string"},{"indexed":false,"name":"reason","type":"string"}],"name":"Issue","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Redeem","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"}];
@@ -24,6 +24,8 @@ export default class TransferableMeetupToken
         this.contractOwner = contractOwner;
         this.accountPassword = accountPassword;
 
+        logger.debug(`About to connect to Ethereum node using websocket url ${wsURL}`);
+
         this.web3 = new Web3(wsURL);
 
         if (contractAddress)
@@ -41,18 +43,20 @@ export default class TransferableMeetupToken
     }
 
     // deploy a new contract
-    deployContract(contractOwner: string, gas = 800000, gasPrice = 4000000000): Promise<string>
+    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 800000, gasPrice = 4000000000): Promise<string>
     {
         const self = this;
         this.contractOwner = contractOwner;
 
-        const description = `deploy transferable meetup token from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
+        const description = `deploy transferable meetup token with token symbol ${symbol}, token name "${tokenName}" from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
 
         return new Promise<string>((resolve, reject) =>
         {
+            logger.debug(`About to ${description}`);
+
             self.contract.deploy({
                 data: self.binary,
-                arguments: ['TMT', 'Transferable Meetup Token']
+                arguments: [symbol, tokenName]
             })
             .send({
                 from: contractOwner,

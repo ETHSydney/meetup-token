@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git+https://github.com/naddison36/meetup-token.git"
   },
+  "bin": {
+    "mcoin": "./index.js"
+  },
   "keywords": [
     "meetup",
     "Ethereum",
@@ -18,7 +21,7 @@
   "license": "MIT",
   "homepage": "https://github.com/naddison36/meetup-token#readme",
   "dependencies": {
-    "async": "^2.5.0",
+    "commander": "^2.11.0",
     "config": "^1.26.2",
     "config-logger": "git://github.com/naddison36/logger#v0.0.4",
     "js-yaml": "^3.9.1",
@@ -28,9 +31,9 @@
     "web3": "^1.0.0-beta.18"
   },
   "devDependencies": {
-    "@types/async": "2.0.40",
+    "@types/commander": "^2.9.1",
     "@types/node": "^6",
     "@types/underscore": "^1.8.1",
-    "typescript": "~2.3.1"
+    "typescript": "~2.4.2"
   }
 }

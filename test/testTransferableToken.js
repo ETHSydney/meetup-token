@@ -9,32 +9,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
-const token_1 = require("../src/token");
+const transferableToken_1 = require("../src/transferableToken");
 const testMemberAddress1 = '0xf55583ff8461db9dfbbe90b5f3324f2a290c3356';
 const testMemberAddress2 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
 const testMemberAddress3 = '0x7dcb9490316fc555b1ca8bc0db609ad4846b864b';
 const testContractOwner = '0xd728cee2648a642fda9dc1218d2d5746848400ba';
 const testContractAddress = '0x78bb290147d001be464491315d991ded1f248d8a';
 const accountPassword = 'meetup';
-const meetupToken = new token_1.default("ws://localhost:8647", testContractOwner, testContractAddress, accountPassword);
+const meetupToken = new transferableToken_1.default("ws://localhost:8647", testContractOwner, testContractAddress, accountPassword);
 function testDeployContract() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // TODO this has not yet been implemented in web3 1.0
             //await meetupToken.unlockAccount(accountPassword);
             const contractAddress = yield meetupToken.deployContract(testContractOwner);
-            console.log(`New deployed transferable meetup token contract address: ${contractAddress}`);
+            console.log(`Successfully deployed transferable meetup token to contract address: ${contractAddress}`);
         }
         catch (err) {
             console.log(`Failed to deploy a transferable meetup token. Error: ${err.message}`);
         }
     });
 }
-//testDeployContract();
+testDeployContract();
 function testEvents() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const newMeetupToken = new token_1.default("ws://localhost:8647", testContractOwner, null, 
+            const newMeetupToken = new transferableToken_1.default("ws://localhost:8647", testContractOwner, null, 
             //testContractAddress,
             accountPassword);
             // TODO this has not yet been implemented in web3 1.0
@@ -94,5 +94,5 @@ function testExistingContractIssue() {
         }
     });
 }
-//testExistingContractIssue();
-//# sourceMappingURL=testToken.js.map
+testExistingContractIssue();
+//# sourceMappingURL=testTransferableToken.js.map

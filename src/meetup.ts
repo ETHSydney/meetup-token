@@ -29,6 +29,8 @@ export default class Meetup {
 
     constructor(readonly apiKey: string, readonly urlname: string) {
         this.meetup = new MeetupApi({key: apiKey});
+
+        logger.debug(`Instanciated Meetup`);
     }
 
     getMemberNumbers(): Promise<number>
@@ -142,15 +144,15 @@ export default class Meetup {
         }
     }
 
-    getMembersAtEvent(event_id: number): Promise<number[]>
+    getMembersAtEvent(event_id: number): Promise<string[]>
     {
         const self = this;
 
         const description = `event RSVPs for ${self.urlname} Meetup event with id ${event_id}`;
 
-        return new Promise<number[]>((resolve: (result?: number[]) => void, reject: (err: Error) => void) =>
+        return new Promise<string[]>((resolve: (result?: string[]) => void, reject: (err: Error) => void) =>
         {
-            this.meetup.getEventRSVPs({
+            self.meetup.getEventRSVPs({
                 'urlname': self.urlname,
                 "event_id": event_id
             },
@@ -172,13 +174,13 @@ export default class Meetup {
                     logger.trace(rsvps);
                     logger.debug(`Returned ${rsvps.length} ${description}`);
 
-                    const rsvpMembers: number[] = [];
+                    const rsvpMembers: string[] = [];
 
                     rsvps.forEach(rsvp =>
                     {
                         if (rsvp.response == 'yes' && rsvp.member && rsvp.member.id )
                         {
-                            rsvpMembers.push(rsvp.member.id);
+                            rsvpMembers.push(rsvp.member.id.toString());
                         }
                     });
 

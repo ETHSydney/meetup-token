@@ -19,13 +19,13 @@ const meetup = new meetup_1.default(process.env.MEETUP_KEY, 'SydEthereum');
 //     catch((err) => {
 //     console.log(`second catch error: ${err}`);
 // });
-meetup.extractMemberAddresses()
-    .then(memberAddresses => {
-    console.log(memberAddresses);
-})
-    .catch(err => {
-    console.log(`test Error: ${err}`);
-});
+// meetup.extractMemberAddresses()
+//     .then( memberAddresses => {
+//         console.log(memberAddresses);
+//     })
+//     .catch(err => {
+//         console.log(`test Error: ${err}`);
+//     });
 meetup.getMembersAtEvent(237360133)
     .then(memberIds => {
     console.log(memberIds);
