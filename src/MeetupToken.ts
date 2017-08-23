@@ -39,10 +39,19 @@ export default class MeetupToken
         this.contractAddress = options.contractAddress;
         this.contractOwner = options.contractOwner;
 
-        this.token = new Token(
-            options.wsURL || "ws://localhost:8546",
-            options.contractOwner,
-            options.contractAddress);
+        try
+        {
+            this.token = new Token(
+                options.wsURL || "ws://localhost:8546",
+                options.contractOwner,
+                options.contractAddress);
+        }
+        catch (err)
+        {
+            const error = new VError(err, `Could not connect to Ethereum node using websocket address ${options.wsURL}`);
+            logger.error(error.stack);
+            throw error;
+        }
     }
 
     async deployTokenContract(symbol: string, tokenName: string): Promise<string>

@@ -26,7 +26,14 @@ class MeetupToken {
         this.meetup = new meetup_1.default(options.apiKey, options.urlname);
         this.contractAddress = options.contractAddress;
         this.contractOwner = options.contractOwner;
-        this.token = new transferableToken_1.default(options.wsURL || "ws://localhost:8546", options.contractOwner, options.contractAddress);
+        try {
+            this.token = new transferableToken_1.default(options.wsURL || "ws://localhost:8546", options.contractOwner, options.contractAddress);
+        }
+        catch (err) {
+            const error = new VError(err, `Could not connect to Ethereum node using websocket address ${options.wsURL}`);
+            logger.error(error.stack);
+            throw error;
+        }
     }
     deployTokenContract(symbol, tokenName) {
         return __awaiter(this, void 0, void 0, function* () {

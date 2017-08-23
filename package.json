@@ -8,7 +8,7 @@
     "url": "git+https://github.com/naddison36/meetup-token.git"
   },
   "bin": {
-    "mcoin": "./index.js"
+    "mcoin": "./mcoin.js"
   },
   "keywords": [
     "meetup",

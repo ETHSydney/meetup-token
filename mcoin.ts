@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import * as program from "commander";
-import MeetupToken from "./MeetupToken";
+import MeetupToken from "./src/MeetupToken";
 
 program
     .option('-k, --key <key>', 'Meetup API key')
@@ -19,11 +19,13 @@ program
     {
         const meetupToken = initMeetupToken();
 
+        const tokenConfig = loadTokenConfig();
+
         try
         {
             const contract = await meetupToken.deployTokenContract(
-                program.symbol,
-                program.tokenName
+                tokenConfig.symbol,
+                tokenConfig.tokenName
             );
 
             console.log(`Contract address for newly deployed meetup token is ${contract}`);
@@ -117,7 +119,9 @@ function loadMeetupConfig(): {
 function loadTokenConfig(): {
     wsurl: string,
     contractOwner: string,
-    contractAddress?: string
+    contractAddress?: string,
+    symbol: string,
+    tokenName: string
 }
 {
     // set the NODE_ENV environment so the token config file can be loaded
@@ -137,12 +141,14 @@ function loadTokenConfig(): {
 
     // use the program options in preference to the configuration file or geth defaults
     const wshost = program.wshost || config.wshost || 'localhost';
-    const wsport = program.wsport.toString() || config.wsport.toString() || '8546';
+    const wsport = program.wsport || config.wsport || '8546';
 
     return {
-        wsurl: `ws://${wshost}:${wsport}`,
+        wsurl: `ws://${wshost}:${wsport.toString()}`,
         contractOwner: contractOwner,
-        contractAddress: program.contract || config.contractAddress
+        contractAddress: program.contract || config.contractAddress,
+        symbol: program.symbol || config.symbol || 'SET',
+        tokenName: program.tokenName || config.tokenName || 'Transferrable Sydney Ethereum Token'
     };
 }
 

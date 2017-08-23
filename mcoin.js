@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const program = require("commander");
-const MeetupToken_1 = require("./MeetupToken");
+const MeetupToken_1 = require("./src/MeetupToken");
 program
     .option('-k, --key <key>', 'Meetup API key')
     .option('-m, --meetupName <meetupName>', 'Meetup name. eg SydEthereum')
@@ -26,8 +26,9 @@ program
     .action(function (command, eventId) {
     return __awaiter(this, void 0, void 0, function* () {
         const meetupToken = initMeetupToken();
+        const tokenConfig = loadTokenConfig();
         try {
-            const contract = yield meetupToken.deployTokenContract(program.symbol, program.tokenName);
+            const contract = yield meetupToken.deployTokenContract(tokenConfig.symbol, tokenConfig.tokenName);
             console.log(`Contract address for newly deployed meetup token is ${contract}`);
             process.exit();
         }
@@ -108,11 +109,13 @@ function loadTokenConfig() {
     }
     // use the program options in preference to the configuration file or geth defaults
     const wshost = program.wshost || config.wshost || 'localhost';
-    const wsport = program.wsport.toString() || config.wsport.toString() || '8546';
+    const wsport = program.wsport || config.wsport || '8546';
     return {
-        wsurl: `ws://${wshost}:${wsport}`,
+        wsurl: `ws://${wshost}:${wsport.toString()}`,
         contractOwner: contractOwner,
-        contractAddress: program.contract || config.contractAddress
+        contractAddress: program.contract || config.contractAddress,
+        symbol: program.symbol || config.symbol || 'SET',
+        tokenName: program.tokenName || config.tokenName || 'Transferrable Sydney Ethereum Token'
     };
 }
 function initMeetupToken() {
