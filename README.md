@@ -8,7 +8,7 @@ npm install meetup-token
 ```
 
 ## Usage
-
+```
 ./mcoin.js [options] [command]
 
   Options:
@@ -26,7 +26,7 @@ npm install meetup-token
     deploy      deploy new Meetup token contract
     members     Issue tokens to new members of the Meetup
     event <id>  Issue tokens to members who attended a Meetup event with Meetup event id
-
+```
 ## Configuration
 Configuration files are under the [config](./config) folder. The command options will override any configured values.
 
