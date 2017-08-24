@@ -30,9 +30,9 @@ npm install meetup-token
 ## Configuration
 Configuration files are under the [config](./config) folder. The command options will override any configured values.
 
-[logger.yaml](config/logger.yaml) sets the logging level
-[meetup.yaml](config/meetup.yaml) sets the Meetup API key and meetup name.
-[token.yaml](config/token.yaml) sets Ethereum node connection details and details about the token smart contract.
+* [logger.yaml](config/logger.yaml) sets the logging level
+* [meetup.yaml](config/meetup.yaml) sets the Meetup API key and meetup name.
+* [token.yaml](config/token.yaml) sets Ethereum node connection details and details about the token smart contract.
 
 # Geth
 This project comes with scripts to run a development instance of geth to test deploying a token contract and issuing tokens to it.
