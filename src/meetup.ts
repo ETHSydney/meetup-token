@@ -30,7 +30,7 @@ export default class Meetup {
     constructor(readonly apiKey: string, readonly urlname: string) {
         this.meetup = new MeetupApi({key: apiKey});
 
-        logger.debug(`Instanciated Meetup`);
+        logger.debug(`Instantiated MeetupApi`);
     }
 
     getMemberNumbers(): Promise<number>

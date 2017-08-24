@@ -23,8 +23,17 @@ class TransferableToken {
         this.contractAddress = contractAddress;
         this.contractOwner = contractOwner;
         this.accountPassword = accountPassword;
-        logger.debug(`About to connect to Ethereum node using websocket url ${wsURL}`);
+        const description = `connect to Ethereum node using websocket url ${wsURL}`;
+        logger.debug(`About to ${description}`);
         this.web3 = new Web3(wsURL);
+        // TODO need a way to validate that web3 connected to a node. The following will not work as web3 1.0 no longer supports web3.isCOnnected()
+        // https://github.com/ethereum/web3.js/issues/440
+        // if (!this.web3.isConnected())
+        // {
+        //     const error = new VError(`Failed to ${description}.`);
+        //     logger.error(error.stack);
+        //     throw(error);
+        // }
         if (contractAddress) {
             this.contract = new this.web3.eth.Contract(this.jsonInterface, contractAddress, {
                 from: contractOwner
@@ -37,40 +46,47 @@ class TransferableToken {
         }
     }
     // deploy a new contract
-    deployContract(contractOwner, symbol = "SET", tokenName = "Transferable Meetup token", gas = 800000, gasPrice = 4000000000) {
+    deployContract(contractOwner, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 4000000000) {
         const self = this;
         this.contractOwner = contractOwner;
         const description = `deploy transferable meetup token with token symbol ${symbol}, token name "${tokenName}" from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
         return new Promise((resolve, reject) => {
             logger.debug(`About to ${description}`);
-            self.contract.deploy({
-                data: self.binary,
-                arguments: [symbol, tokenName]
-            })
-                .send({
-                from: contractOwner,
-                gas: gas,
-                gasPrice: gasPrice
-            })
-                .on('transactionHash', (hash) => {
-                logger.debug(`Got transaction hash ${hash} from ${description}`);
-                self.transactions[hash] = 0;
-            })
-                .on('receipt', (receipt) => {
-                logger.debug(`Created contract with address ${receipt.contractAddress} using ${receipt.gasUsed} gas for ${description}`);
-                self.contractAddress = receipt.contractAddress;
-                self.contract.options.address = receipt.contractAddress;
-                resolve(receipt.contractAddress);
-            })
-                .on('confirmation', (confirmationNumber, receipt) => {
-                logger.trace(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
-                self.transactions[receipt.transactionHash] = confirmationNumber;
-            })
-                .on('error', (err) => {
+            try {
+                self.contract.deploy({
+                    data: self.binary,
+                    arguments: [symbol, tokenName]
+                })
+                    .send({
+                    from: contractOwner,
+                    gas: gas,
+                    gasPrice: gasPrice
+                })
+                    .on('transactionHash', (hash) => {
+                    logger.debug(`Got transaction hash ${hash} from ${description}`);
+                    self.transactions[hash] = 0;
+                })
+                    .on('receipt', (receipt) => {
+                    logger.debug(`Created contract with address ${receipt.contractAddress} using ${receipt.gasUsed} gas for ${description}`);
+                    self.contractAddress = receipt.contractAddress;
+                    self.contract.options.address = receipt.contractAddress;
+                    resolve(receipt.contractAddress);
+                })
+                    .on('confirmation', (confirmationNumber, receipt) => {
+                    logger.trace(`${confirmationNumber} confirmations for ${description} with transaction hash ${receipt.transactionHash}`);
+                    self.transactions[receipt.transactionHash] = confirmationNumber;
+                })
+                    .on('error', (err) => {
+                    const error = new VError(err, `Failed to ${description}.`);
+                    logger.error(error.stack);
+                    reject(error);
+                });
+            }
+            catch (err) {
                 const error = new VError(err, `Failed to ${description}.`);
                 logger.error(error.stack);
                 reject(error);
-            });
+            }
         });
     }
     // issue an amount of tokens to an address

@@ -8,13 +8,13 @@ program
     .option('-h, --wshost <wsHost>', 'Host of WS-RPC server listening interface (default: "localhost")')
     .option('-p, --wsport <wsPort>', 'Post of WS-RPC server listening interface (default: "8546")')
     .option('-o, --owner <owner>', 'Address of contract owner')
-    .option('-c, --contract <contract>', 'Contract address of the Meetup token');
+    .option('-c, --contract <contract>', 'Contract address of the Meetup token')
+    .option('-s, --symbol <symbol>', 'Symbol of the Mettup token (default "SET")')
+    .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")');
 
 program
     .command('deploy')
     .description('deploy new Meetup token contract')
-    .option('-s, --symbol <symbol>', 'Symbol of the Mettup token (default "SET")')
-    .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")')
     .action(async function(command, eventId)
     {
         const meetupToken = initMeetupToken();
@@ -61,7 +61,7 @@ program
 
 program
     .command('event <id>')
-    .description('Issue tokens to members who attended a Meetup event with specified id')
+    .description('Issue tokens to members who attended a Meetup event with Meetup event id')
     .action(async (eventId) =>
     {
         const meetupToken = initMeetupToken();
@@ -84,6 +84,12 @@ program
     });
 
 program.parse(process.argv);
+
+// display help if no commands passed into program. The first 2 arguments are node and mcoin.js
+if (process.argv.length < 3) {
+    program.outputHelp();
+    process.exit(2);
+}
 
 function loadMeetupConfig(): {
     key: string,
@@ -121,7 +127,14 @@ function loadTokenConfig(): {
     contractOwner: string,
     contractAddress?: string,
     symbol: string,
-    tokenName: string
+    tokenName: string,
+    issueAmounts: {
+        newMember: number,
+        attendEvent: number,
+        speakAtEvent: number,
+        hostEvent: number,
+        sponsorEvent: number
+    }
 }
 {
     // set the NODE_ENV environment so the token config file can be loaded
@@ -143,12 +156,23 @@ function loadTokenConfig(): {
     const wshost = program.wshost || config.wshost || 'localhost';
     const wsport = program.wsport || config.wsport || '8546';
 
+    if (!config.amounts) {
+        config.amounts = {};
+    }
+
     return {
         wsurl: `ws://${wshost}:${wsport.toString()}`,
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         symbol: program.symbol || config.symbol || 'SET',
-        tokenName: program.tokenName || config.tokenName || 'Transferrable Sydney Ethereum Token'
+        tokenName: program.tokenName || config.tokenName || 'Transferrable Sydney Ethereum Token',
+        issueAmounts: {
+            newMember: program.newMember || config.issueAmounts.newMember || 1000,
+            attendEvent: program.attendEvent || config.issueAmounts.attendEvent || 2000,
+            speakAtEvent: program.speakAtEvent || config.issueAmounts.speakAtEvent || 3000,
+            hostEvent: program.hostEvent || config.issueAmounts.hostEvent || 5000,
+            sponsorEvent: program.sponsorEvent || config.issueAmounts.sponsorEvent || 10000
+        }
     };
 }
 
@@ -162,6 +186,7 @@ function initMeetupToken(): MeetupToken
         urlname: meetupConfig.meetupName,
         contractAddress: tokenConfig.contractAddress,
         contractOwner: tokenConfig.contractOwner,
-        wsURL: tokenConfig.wsurl
+        wsURL: tokenConfig.wsurl,
+        issueAmounts: tokenConfig.issueAmounts
     });
 }

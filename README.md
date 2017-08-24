@@ -7,11 +7,53 @@ Once Node.js has been installed run the following
 npm install meetup-token
 ```
 
-## Configuration
-How to config your meetup
-
 ## Usage
 
+./mcoin.js [options] [command]
+
+  Options:
+    -k, --key <key>                Meetup API key
+    -m, --meetupName <meetupName>  Meetup name. eg SydEthereum
+    -h, --wshost <wsHost>          Host of WS-RPC server listening interface (default: "localhost")
+    -p, --wsport <wsPort>          Post of WS-RPC server listening interface (default: "8546")
+    -o, --owner <owner>            Address of contract owner
+    -c, --contract <contract>      Contract address of the Meetup token
+    -s, --symbol <symbol>          Symbol of the Mettup token (default "SET")
+    -t, --tokenName <tokenName>    Name of the Meetup token (default "Transferable Sydney Ethereum Token")
+    -h, --help                     output usage information
+
+  Commands:
+    deploy      deploy new Meetup token contract
+    members     Issue tokens to new members of the Meetup
+    event <id>  Issue tokens to members who attended a Meetup event with Meetup event id
+
+## Configuration
+Configuration files are under the [config](./config) folder. The command options will override any configured values.
+
+[logger.yaml](config/logger.yaml) sets the logging level
+[meetup.yaml](config/meetup.yaml) sets the Meetup API key and meetup name.
+[token.yaml](config/token.yaml) sets Ethereum node connection details and details about the token smart contract.
+
+# Geth
+This project comes with scripts to run a development instance of geth to test deploying a token contract and issuing tokens to it.
+
+## Initial Setup
+In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
+```
+cd scripts
+chmod a+x initGeth.sh
+./initGeth.sh
+```
+
+This is start a new development blockchain using the [genesis.json](./scripts/genesis.json) file. The chain data will be under the [testchain](./testchain) folder.
+
+## Starting Geth
+If the above initial setup has already been done, the development geth node can be started with
+```
+cd scripts
+chmod a+x startGeth.sh
+./startGeth.sh
+```
 
 # Why?
 This project is primarily about getting the [Sydney Ethereum](https://www.meetup.com/SydEthereum/) community to collaborate on a project and explore the uses of an Ethereum token. The initial thoughts are it could be used for voting rights and promotional offers. It'll be open to the community to further innovate with the token.

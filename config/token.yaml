@@ -5,3 +5,9 @@
   contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991'
   symbol: 'SET'
   tokenName: 'Transferrable Sydney Ethereum Token'
+  issueAmounts:
+    newMember: 1000
+    attendEvent: 2000
+    speakAtEvent: 3000
+    hostEvent: 5000
+    sponsorEvent: 10000

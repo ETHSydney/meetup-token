@@ -12,7 +12,8 @@ export interface IMeetupToken {
     urlname: string,
     contractAddress?: string,
     contractOwner: string,
-    wsURL?: string
+    wsURL?: string,
+    issueAmounts?: { [issueReason: string]: number}
 }
 
 export default class MeetupToken
@@ -38,6 +39,10 @@ export default class MeetupToken
 
         this.contractAddress = options.contractAddress;
         this.contractOwner = options.contractOwner;
+
+        if (options.issueAmounts) {
+            this.issueAmounts = options.issueAmounts;
+        }
 
         try
         {
@@ -117,7 +122,6 @@ export default class MeetupToken
 
     async issueTokensToMembersAtEvent(eventId: number): Promise<MemberAddress[]>
     {
-        const reason = 'attendEvent';
         try
         {
             // get list of members who attended a meetup event
@@ -125,33 +129,11 @@ export default class MeetupToken
 
             logger.debug(`${membersAtEvent.length} members attended the Meetup event with id ${eventId}`);
 
-            // get list of members who have addresses in their meetup intro
-            const membersWithAddresses: MemberAddress[] = await this.meetup.extractMemberAddresses();
-
-            logger.debug(`${membersWithAddresses.length} members who have addresses in their Meetup intro`);
-
-            // get list of members with addresses who were at the meetup event
-            const membersWithAddressesAtEvent = MeetupToken.filterMembersWithAddressesInMembersFilter(membersWithAddresses, membersAtEvent);
-
-            logger.debug(`${membersWithAddressesAtEvent.length} members at the event with ${eventId} has an address`);
-
-            // for each member, issue a token
-            for (let memberWithAddressesAtEvent of membersWithAddressesAtEvent)
-            {
-                await this.token.issueTokens(
-                    memberWithAddressesAtEvent.address,
-                    this.issueAmounts[reason],
-                    memberWithAddressesAtEvent.id.toString(),
-                    reason);
-            }
-
-            logger.info(`Issued tokens to ${membersWithAddressesAtEvent.length} new members`);
-
-            return membersWithAddressesAtEvent;
+            return await this.issueTokensToMembers(membersAtEvent, this.issueAmounts.attendEvent, 'attendEvent')
         }
         catch (err)
         {
-            const error = new VError(err, `Failed to issue tokens to members at ${this.meetup.urlname} Meetup event with id ${eventId}`);
+            const error = new VError(err, `Failed to issue tokens to members of the ${this.meetup.urlname} Meetup who attended event with id ${eventId}`);
             logger.error(error.stack);
             throw error;
         }

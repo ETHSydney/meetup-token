@@ -21,7 +21,7 @@ class Meetup {
         this.apiLimit = 5;
         this.extractAddressFromText = ethUtils_1.extractEthAddress;
         this.meetup = new MeetupApi({ key: apiKey });
-        logger.debug(`Instanciated Meetup`);
+        logger.debug(`Instantiated MeetupApi`);
     }
     getMemberNumbers() {
         const self = this;
