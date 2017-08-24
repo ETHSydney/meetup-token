@@ -85,7 +85,7 @@ export default class MeetupToken
         try
         {
             // get the list of members who have already received tokens in the past
-            const existingTokenHolders: string[] = await this.token.getIssueEvents();
+            const existingTokenHolders: string[] = await this.token.getIssueEvents(reason);
 
             logger.debug(`${existingTokenHolders.length} members who have already received tokens in the past`);
 

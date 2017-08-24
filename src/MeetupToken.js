@@ -58,7 +58,7 @@ class MeetupToken {
             const reason = 'newMember';
             try {
                 // get the list of members who have already received tokens in the past
-                const existingTokenHolders = yield this.token.getIssueEvents();
+                const existingTokenHolders = yield this.token.getIssueEvents(reason);
                 logger.debug(`${existingTokenHolders.length} members who have already received tokens in the past`);
                 // get the list of members who have addresses in their Meetup intro
                 const membersWithAddresses = yield this.meetup.extractMemberAddresses();

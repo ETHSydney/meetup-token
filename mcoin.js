@@ -19,7 +19,8 @@ program
     .option('-o, --owner <owner>', 'Address of contract owner')
     .option('-c, --contract <contract>', 'Contract address of the Meetup token')
     .option('-s, --symbol <symbol>', 'Symbol of the Mettup token (default "SET")')
-    .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")');
+    .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")')
+    .option('-o, --verbose <level>', '0 trace, 1 debug, 2 info, 3 warn, 4 error (default 2)');
 program
     .command('deploy')
     .description('deploy new Meetup token contract')

@@ -1,7 +1,7 @@
 ---
   wshost: "localhost"
   wsport: "8647"
-  contractAddress: '0xA771E3Aaaf481F439Fcc89c640a8282aCB1Efe6A'
+  contractAddress: '0xC97Bbf4F51d81dd03A4178CA9840c0FA47D1c41a'
   contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991'
   symbol: 'SET'
   tokenName: 'Transferrable Sydney Ethereum Token'

@@ -1,3 +1,5 @@
 ---
-  key: '<can setup in env var>'  # WARNING do not commit your API key in a public repo! The -k or --key option can also be used to set the meetup API key
+  # # WARNING do not commit your API key in a public repo!
+  key: '<can setup in env var>' # The -k or --key option can also be used to set the meetup API key
+  # Get your Meetup API Key from https://secure.meetup.com/meetup_api/key/
   name: 'SydEthereum'     # is the Meetup name which is the urlname in the Meetup API

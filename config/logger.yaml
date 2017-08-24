@@ -1,5 +1,5 @@
 ---
-  logLevel: "info"
+  logLevel: "debug"
   levels:
     trace: 0
     debug: 1
