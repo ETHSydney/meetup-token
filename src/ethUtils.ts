@@ -2,7 +2,7 @@
 export function extractEthAddress(fromText: string) : void | string
 {
     // split on one or more spaces, commas or tabs
-    const words = fromText.split(/[ ,\t]+/);
+    const words = fromText.split(/[ ,\t\n]+/);
 
     let returnString: string;
 

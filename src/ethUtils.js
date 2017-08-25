@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 function extractEthAddress(fromText) {
     // split on one or more spaces, commas or tabs
-    const words = fromText.split(/[ ,\t]+/);
+    const words = fromText.split(/[ ,\t\n]+/);
     let returnString;
     words.forEach((word) => {
         if (word.length == 42 &&

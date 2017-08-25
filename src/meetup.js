@@ -82,6 +82,7 @@ class Meetup {
                     memberProfiles.forEach((memberProfile) => {
                         const memberAddress = self.getMemberAddressFromProfile(memberProfile);
                         if (memberAddress) {
+                            logger.debug(`Member ${memberAddress.id} has address ${memberAddress.address}`);
                             memberAddresses.push(memberAddress);
                         }
                     });
