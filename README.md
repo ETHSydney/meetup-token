@@ -45,7 +45,7 @@ chmod a+x initGeth.sh
 ./initGeth.sh
 ```
 
-This is start a new development blockchain using the [genesis.json](./scripts/genesis.json) file. The chain data will be under the [testchain](./testchain) folder.
+This is start a new development blockchain using the [genesis.json](./scripts/genesis.json) file. The chain data will be under [testchain](./testchain) in the geth folder.
 
 ## Starting Geth
 If the above initial setup has already been done, the development geth node can be started with
@@ -54,6 +54,18 @@ cd scripts
 chmod a+x startGeth.sh
 ./startGeth.sh
 ```
+
+# Parity
+
+# Starting Parity
+In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
+```
+cd scripts
+chmod a+x startParity.sh
+./startParity.sh
+``
+
+This is start a new development blockchain using the [meetupChainSpec.json](./scripts/meetupChainSpec.json) specification file and [parityDevConfig.toml](./scripts/parityDevConfig.toml) config file. The chain data will be under [testchain](./testchain) in the parity folder.
 
 # Why?
 This project is primarily about getting the [Sydney Ethereum](https://www.meetup.com/SydEthereum/) community to collaborate on a project and explore the uses of an Ethereum token. The initial thoughts are it could be used for voting rights and promotional offers. It'll be open to the community to further innovate with the token.
@@ -97,7 +109,7 @@ https://github.com/bokkypoobah/TokenTrader/wiki/Supported-ERC20-Tokens
 * The token holder transfers tokens to another registered member
 * The token holder issues tokens to another registered member
 
-FAQ
+# FAQ
 * Who is the token owner? For practical reasons, the token owner will be a number of people who know the private key to the owner account.
 * How do you stop people creating multiple meetup profiles? You can't. The tokens aren't worth anything so people trying to game the system for free tokens are wasting their time.
 
