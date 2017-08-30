@@ -1,10 +1,10 @@
 ---
   wshost: "localhost"
   wsport: "8647"
-  contractAddress: '0xE2f209931E1526ce740Fb77A3fF0F3b2eaB5e74e' # Dev
-#  contractAddress: '0xa82490c21A2c924e5C0a759E8cA6a165FCa8dce1' # Main net
-  contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991' # Dev
-#  contractOwner: '0xCfF644e86Ca1E0212288BcC4ff36Ae9a47714bbc' # Main net
+#  contractAddress: '0xE2f209931E1526ce740Fb77A3fF0F3b2eaB5e74e' # Dev
+  contractAddress: '0xe06eda7435bA749b047380CEd49121ddE93334Ae' # Main net
+#  contractOwner: '0x8ae386892b59bd2a7546a9468e8e847d61955991' # Dev
+  contractOwner: '0xCfF644e86Ca1E0212288BcC4ff36Ae9a47714bbc' # Main net
   symbol: 'SET'
   tokenName: 'Transferable Sydney Ethereum Token'
   issueAmounts:

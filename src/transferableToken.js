@@ -46,7 +46,7 @@ class TransferableToken {
         }
     }
     // deploy a new contract
-    deployContract(contractOwner, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 6000000000) {
+    deployContract(contractOwner, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 5000000000) {
         const self = this;
         this.contractOwner = contractOwner;
         const description = `deploy transferable meetup token with token symbol ${symbol}, token name "${tokenName}" from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
