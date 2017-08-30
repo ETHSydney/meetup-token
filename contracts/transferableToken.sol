@@ -1,24 +1,14 @@
 /*
-file:   SydneyEthereum.sol
-ver:    0.1.0
-updated:4-Aug-2017
-author: Darryl Morris
-email:  o0ragman0o AT gmail.com
-
-An ERC20 compliant token with reentry protection and safe math.
+An ERC20 compliant token that is linked to an external identifier. For exmaple, Meetup.com
 
 This software is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 See MIT Licence for further details.
 <https://opensource.org/licenses/MIT>.
-
-Release Notes
--------------
-0.1.0
 */
 
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
 contract ERC20Token
 {
@@ -29,6 +19,8 @@ contract ERC20Token
     /// @return Token symbol
     string sym;
     string nam;
+
+    uint8 public decimals = 0;
     
     // Token ownership mapping
     mapping (address => uint) balance;
@@ -140,14 +132,15 @@ contract TransferableMeetupToken is ERC20Token
         totSupply += amount;
         balance[toAddress] += amount;
         Issue(toAddress, amount, externalId, reason);
+        Transfer(0x0, toAddress, amount);
     }
     
-    function redeem(address fromAddress, uint amount) public
+    function redeem(uint amount) public
     {
-        require(owner == msg.sender);
-        require(balance[fromAddress] >= amount);
+        require(balance[msg.sender] >= amount);
         totSupply -= amount;
-        balance[fromAddress] -= amount;
-        Redeem(fromAddress, amount);
+        balance[msg.sender] -= amount;
+        Redeem(msg.sender, amount);
+        Transfer(msg.sender, 0x0, amount);
     }
 }
