@@ -54,7 +54,7 @@ export default class TransferableToken
     }
 
     // deploy a new contract
-    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 4000000000): Promise<string>
+    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 6000000000): Promise<string>
     {
         const self = this;
         this.contractOwner = contractOwner;
