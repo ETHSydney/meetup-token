@@ -124,7 +124,7 @@ function loadTokenConfig() {
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         symbol: program.symbol || config.symbol || 'SET',
-        tokenName: program.tokenName || config.tokenName || 'Transferrable Sydney Ethereum Token',
+        tokenName: program.tokenName || config.tokenName || 'Transferable Sydney Ethereum Token',
         issueAmounts: {
             newMember: program.newMember || config.issueAmounts.newMember || 1000,
             attendEvent: program.attendEvent || config.issueAmounts.attendEvent || 2000,

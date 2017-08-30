@@ -2,9 +2,11 @@
 mode = "last"
 
 chain = "MeetupChain"
-base_path = "/Users/nicholasaddison/Documents/workspaces/meetup-token/testchain/parity"
-db_path = "/Users/nicholasaddison/Documents/workspaces/meetup-token/testchain/parity/chains"
-keys_path = "/Users/nicholasaddison/Documents/workspaces/meetup-token/testchain/keystore"
+base_path = "../testchain/parity"
+db_path = "../testchain/parity/chains"
+keys_path = "../testchain/keystore"
+identity = "MeetupChain Test Node"
+light = false
 
 [websockets]
 disable = false
@@ -19,7 +21,7 @@ force = false
 disable = false
 port = 8181
 interface = "127.0.0.1"
-path = "$HOME/Library/Application Support/io.parity.ethereum/signer"
+path = "../testchain/parity/signer"
 
 [ipc]
 disable = true
@@ -38,5 +40,5 @@ jit = false
 
 [misc]
 logging = "own_tx=trace"
-log_file = "/Users/nicholasaddison/Documents/workspaces/meetup-token/testchain/parity/parity.log"
+log_file = "../testchain/parity/MeetupChain.log"
 color = true

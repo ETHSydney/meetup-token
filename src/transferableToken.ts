@@ -292,6 +292,8 @@ export default class TransferableToken
 
         try
         {
+            logger.debug(`About to ${description}`);
+
             const events = await this.contract.getPastEvents('Issue', options);
 
             logger.debug(`Got ${events.length} past Issue events`);
@@ -322,15 +324,18 @@ export default class TransferableToken
 
     async unlockAccount(address: string)
     {
+        const description = `unlock account with address ${address}`;
         try
         {
+            logger.debug(`About to ${description}`);
+
             await this.web3.eth.personal.unlockAccount(address, this.accountPassword, 0);
 
-            logger.info(`Unlocked acccount with address ${address}`);
+            logger.info(`Successfully ${description}`);
         }
         catch (err)
         {
-            const error = new VError(err, `Could not unlock account with address ${address}`);
+            const error = new VError(err, `Could not ${description}`);
             console.log(error.stack);
             throw error;
         }
