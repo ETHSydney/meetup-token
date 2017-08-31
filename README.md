@@ -43,39 +43,6 @@ Configuration files are under the [config](./config) folder. The command options
 * [meetup.yaml](config/meetup.yaml) sets the Meetup API key and meetup name.
 * [token.yaml](config/token.yaml) sets Ethereum node connection details and details about the token smart contract.
 
-# Geth
-This project comes with scripts to run a development instance of geth to test deploying a token contract and issuing tokens to it.
-
-## Initial Setup
-In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
-```
-cd scripts
-chmod a+x initGeth.sh
-./initGeth.sh
-```
-
-This is start a new development blockchain using the [genesis.json](./scripts/genesis.json) file. The chain data will be under [testchain](./testchain) in the geth folder.
-
-## Starting Geth
-If the above initial setup has already been done, the development geth node can be started with
-```
-cd scripts
-chmod a+x startGeth.sh
-./startGeth.sh
-```
-
-# Parity
-
-# Starting Parity
-In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
-```
-cd scripts
-chmod a+x startParity.sh
-./startParity.sh
-```
-
-This is start a new development blockchain using the [meetupChainSpec.json](./scripts/meetupChainSpec.json) specification file and [parityDevConfig.toml](./scripts/parityDevConfig.toml) config file. The chain data will be under [testchain](./testchain) in the parity folder.
-
 # Why?
 This project is primarily about getting the [Sydney Ethereum](https://www.meetup.com/SydEthereum/) community to collaborate on a project and explore the uses of an Ethereum token. The initial thoughts are it could be used for voting rights and promotional offers. It'll be open to the community to further innovate with the token.
 
@@ -87,39 +54,36 @@ The public key can be anywhere in the intro field as the program will just selec
 
 When a member joins the meetup group and have entered their Ethereum address in their intro, a number of tokens will be issued to them. When they attend a meetup more tokens will be issued to them. The amount of tokens issued is configurable and is up to the meetup group to decide their rules.
 
-# Tokens
-There will be two types of tokens for the meetup. One is transferrable to any Ethereum address and is not linked to the meetup identity, the other is non transferrable and links with the smart contract the meetup.com identity.
-https://github.com/bokkypoobah/TokenTrader/wiki/Supported-ERC20-Tokens
+# Testing
+## Geth
+This project comes with scripts to run a development instance of geth to test deploying a token contract and issuing tokens to it.
 
-## Transferrable token
-* tokens can be transferred between any Ethereum address.
+### Initial Setup
+In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
+```
+cd scripts
+chmod a+x initGeth.sh
+./initGeth.sh
+```
 
-## Non transferrable token
-* tokens can NOT be transferred to another Ethereum address
-* each token is associated with a meetup identity
-* each token is associated with an meeting event or the initial membership
+This is start a new development blockchain using the [genesis.json](./scripts/genesis.json) file. The chain data will be under [testchain](./testchain) in the geth folder.
 
-## Common token features
-* The token owner can issue any number of tokens to any address at any time. The tokens are not issued at creation or capped.
-* The token owner can burn any number of tokens of any address at any time.
+### Starting Geth
+If the above initial setup has already been done, the development geth node can be started with
+```
+cd scripts
+chmod a+x startGeth.sh
+./startGeth.sh
+```
 
-# Meetup member use cases
-* A member who has not attended any meetings registers their Ethereum address
-* A member who has attended previous meetings registers their Ethereum address
-* A member changes their Ethereum address
-* A member removes their Ethereum address
-* A member attends a meetup event
+## Parity
 
-# Token use cases
-* Token is created and token owner registered
-* Token owner is updated
-* An address of a member is registered
-* An address of a member is deregistered
-* The token holder transfers tokens to another registered member
-* The token holder issues tokens to another registered member
+## Starting Parity
+In the [scripts](./scripts) folder, run the following commands on a Mac OSX or Linux platform
+```
+cd scripts
+chmod a+x startParity.sh
+./startParity.sh
+```
 
-# FAQ
-* Who is the token owner? For practical reasons, the token owner will be a number of people who know the private key to the owner account.
-* How do you stop people creating multiple meetup profiles? You can't. The tokens aren't worth anything so people trying to game the system for free tokens are wasting their time.
-
-
+This is start a new development blockchain using the [meetupChainSpec.json](./scripts/meetupChainSpec.json) specification file and [parityDevConfig.toml](./scripts/parityDevConfig.toml) config file. The chain data will be under [testchain](./testchain) in the parity folder.
