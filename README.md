@@ -1,6 +1,15 @@
 # Meetup token
 An [Ethereum](https://www.ethereum.org/) [ERC20](https://github.com/ethereum/EIPs/issues/20) compatible token for members of a [meetup.com](http://www.meetup.com/) group.
 
+# Smart Contract
+The solidity code for the smart contract is in [transferableToken.sol](./contracts/transferableToken.sol)
+
+The Sydney Ethereum contract address is `0xe06eda7435ba749b047380ced49121dde93334ae`
+
+The contract can be viewed Etherscan at https://etherscan.io/address/0xe06eda7435ba749b047380ced49121dde93334ae 
+
+The Application Binary Interface (ABI) for the contract is in [TransferableMeetupToken.abi](./bin/contracts/TransferableMeetupToken.abi)
+
 # Installation
 Once Node.js has been installed run the following
 ```
@@ -63,7 +72,7 @@ In the [scripts](./scripts) folder, run the following commands on a Mac OSX or L
 cd scripts
 chmod a+x startParity.sh
 ./startParity.sh
-``
+```
 
 This is start a new development blockchain using the [meetupChainSpec.json](./scripts/meetupChainSpec.json) specification file and [parityDevConfig.toml](./scripts/parityDevConfig.toml) config file. The chain data will be under [testchain](./testchain) in the parity folder.
 
