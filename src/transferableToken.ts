@@ -282,12 +282,12 @@ export default class TransferableToken
         }
     }
 
-    async getIssueEvents(reason?: string): Promise<string[]>
+    async getIssueEvents(reason?: string, fromBlock: number = 0): Promise<string[]>
     {
-        const description = `get unique list of external ids from past Issue events with reason ${reason} from contract at address ${this.contract._address}`;
+        const description = `get unique list of external ids from past Issue events with reason ${reason} from block ${fromBlock} and contract address ${this.contract._address}`;
 
         const options = {
-            fromBlock: 0
+            fromBlock: fromBlock
         };
 
         try

@@ -25,6 +25,7 @@ class MeetupToken {
         };
         this.meetup = new meetup_1.default(options.apiKey, options.urlname);
         this.contractAddress = options.contractAddress;
+        this.contractAddressBlock = options.contractAddressBlock;
         this.contractOwner = options.contractOwner;
         if (options.issueAmounts) {
             this.issueAmounts = options.issueAmounts;
@@ -58,7 +59,7 @@ class MeetupToken {
             const reason = 'newMember';
             try {
                 // get the list of members who have already received tokens in the past
-                const existingTokenHolders = yield this.token.getIssueEvents(reason);
+                const existingTokenHolders = yield this.token.getIssueEvents(reason, this.contractAddressBlock);
                 logger.debug(`${existingTokenHolders.length} members who have already received tokens in the past`);
                 // get the list of members who have addresses in their Meetup intro
                 const membersWithAddresses = yield this.meetup.extractMemberAddresses();

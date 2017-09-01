@@ -82,8 +82,11 @@ class Meetup {
                     memberProfiles.forEach((memberProfile) => {
                         const memberAddress = self.getMemberAddressFromProfile(memberProfile);
                         if (memberAddress) {
-                            logger.debug(`Member ${memberAddress.id} has address ${memberAddress.address}`);
+                            logger.debug(`Address ${memberAddress.address} belongs to member with id ${memberAddress.id} and name ${memberAddress.name} `);
                             memberAddresses.push(memberAddress);
+                        }
+                        else {
+                            logger.debug(`no address for member with id ${memberProfile.id}, name ${memberProfile.name} and intro ${memberProfile.group_profile.intro}`);
                         }
                     });
                     resolve(memberAddresses);
@@ -97,6 +100,7 @@ class Meetup {
             if (address) {
                 return {
                     id: memberProfile.id,
+                    name: memberProfile.name,
                     address: address
                 };
             }

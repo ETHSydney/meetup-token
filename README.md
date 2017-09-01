@@ -27,6 +27,7 @@ npm install meetup-token
     -p, --wsport <wsPort>          Post of WS-RPC server listening interface (default: "8546")
     -o, --owner <owner>            Address of contract owner
     -c, --contract <contract>      Contract address of the Meetup token
+    -b, --contractBlock <contractBlock>  Block the Meetup token contract was deployed
     -s, --symbol <symbol>          Symbol of the Mettup token (default "SET")
     -t, --tokenName <tokenName>    Name of the Meetup token (default "Transferable Sydney Ethereum Token")
     -h, --help                     output usage information

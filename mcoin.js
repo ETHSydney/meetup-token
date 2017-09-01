@@ -18,6 +18,7 @@ program
     .option('-p, --wsport <wsPort>', 'Post of WS-RPC server listening interface (default: "8546")')
     .option('-o, --owner <owner>', 'Address of contract owner')
     .option('-c, --contract <contract>', 'Contract address of the Meetup token')
+    .option('-b, --contractBlock <contractBlock>', 'Block the Meetup token contract was deployed')
     .option('-s, --symbol <symbol>', 'Symbol of the Mettup token (default "SET")')
     .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")')
     .option('-o, --verbose <level>', '0 trace, 1 debug, 2 info, 3 warn, 4 error (default 2)');
@@ -123,6 +124,7 @@ function loadTokenConfig() {
         wsurl: `ws://${wshost}:${wsport.toString()}`,
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
+        contractAddressBlock: program.contractBlock || config.contractAddressBlock,
         symbol: program.symbol || config.symbol || 'SET',
         tokenName: program.tokenName || config.tokenName || 'Transferable Sydney Ethereum Token',
         issueAmounts: {
@@ -141,6 +143,7 @@ function initMeetupToken() {
         apiKey: meetupConfig.key,
         urlname: meetupConfig.meetupName,
         contractAddress: tokenConfig.contractAddress,
+        contractAddressBlock: tokenConfig.contractAddressBlock,
         contractOwner: tokenConfig.contractOwner,
         wsURL: tokenConfig.wsurl,
         issueAmounts: tokenConfig.issueAmounts

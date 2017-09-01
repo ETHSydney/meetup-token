@@ -4,10 +4,11 @@ import * as VError from 'verror';
 import {extractEthAddress} from './ethUtils';
 import * as logger from 'config-logger';
 
-export interface MemberAddress {id: number, address: string}
+export interface MemberAddress {id: number, name: string, address: string}
 
 declare type MeetupProfile = {
     id: number,
+    name: string,
     group_profile: {
         intro?: string}
 };
@@ -119,8 +120,11 @@ export default class Meetup {
                         const memberAddress = self.getMemberAddressFromProfile(memberProfile);
 
                         if (memberAddress) {
-                            logger.debug(`Member ${memberAddress.id} has address ${memberAddress.address}`);
+                            logger.debug(`Address ${memberAddress.address} belongs to member with id ${memberAddress.id} and name ${memberAddress.name} `);
                             memberAddresses.push(memberAddress);
+                        }
+                        else {
+                            logger.debug(`no address for member with id ${memberProfile.id}, name ${memberProfile.name} and intro ${memberProfile.group_profile.intro}`);
                         }
                     });
 
@@ -139,6 +143,7 @@ export default class Meetup {
             if (address) {
                 return {
                     id: memberProfile.id,
+                    name: memberProfile.name,
                     address: address
                 };
             }

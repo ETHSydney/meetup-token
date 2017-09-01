@@ -220,11 +220,11 @@ class TransferableToken {
             }
         });
     }
-    getIssueEvents(reason) {
+    getIssueEvents(reason, fromBlock = 0) {
         return __awaiter(this, void 0, void 0, function* () {
-            const description = `get unique list of external ids from past Issue events with reason ${reason} from contract at address ${this.contract._address}`;
+            const description = `get unique list of external ids from past Issue events with reason ${reason} from block ${fromBlock} and contract address ${this.contract._address}`;
             const options = {
-                fromBlock: 0
+                fromBlock: fromBlock
             };
             try {
                 logger.debug(`About to ${description}`);

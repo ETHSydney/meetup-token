@@ -3,14 +3,13 @@ import Meetup from './meetup';
 import Token from './transferableToken';
 import * as VError from 'verror';
 import * as logger from 'config-logger';
-import * as _ from 'underscore';
-import * as assert from 'assert';
 import {MemberAddress} from './meetup';
 
 export interface IMeetupToken {
     apiKey: string,
     urlname: string,
     contractAddress?: string,
+    contractAddressBlock?: number,
     contractOwner: string,
     wsURL?: string,
     issueAmounts?: { [issueReason: string]: number}
@@ -22,6 +21,7 @@ export default class MeetupToken
     token: Token;
 
     contractAddress: string;
+    contractAddressBlock: number;
     contractOwner: string;
 
     // amount of tokens to be issued to a member for doing something
@@ -38,6 +38,7 @@ export default class MeetupToken
         this.meetup = new Meetup(options.apiKey, options.urlname);
 
         this.contractAddress = options.contractAddress;
+        this.contractAddressBlock = options.contractAddressBlock;
         this.contractOwner = options.contractOwner;
 
         if (options.issueAmounts) {
@@ -85,7 +86,7 @@ export default class MeetupToken
         try
         {
             // get the list of members who have already received tokens in the past
-            const existingTokenHolders: string[] = await this.token.getIssueEvents(reason);
+            const existingTokenHolders: string[] = await this.token.getIssueEvents(reason, this.contractAddressBlock);
 
             logger.debug(`${existingTokenHolders.length} members who have already received tokens in the past`);
 
