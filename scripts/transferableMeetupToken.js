@@ -11,8 +11,6 @@ var Account3 = {address: "0x8ae386892b59bd2a7546a9468e8e847d61955991", initAmoun
 
 var accounts = [Account1, Account2, Account3];
 
-var accountPassword = 'meetup';
-
 function createTransferableMeetupToken() {
   web3.eth.defaultAccount = Account1.address;
 
@@ -71,6 +69,8 @@ function issue(toAddress, amount, meetupId, reason) {
 // issue(Account1.address, 10, "4321", "newMember");
 // issue(Account1.address, 20, "4321", "attendEvent");
 // issue(Account2.address, 10, "1234", "newMember");
+
+var accountPassword = 'meetup';
 
 function unlockAllAccounts() {
     eth.accounts.forEach(function(address) {

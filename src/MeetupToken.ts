@@ -123,14 +123,24 @@ export default class MeetupToken
 
     async issueTokensToMembersAtEvent(eventId: number): Promise<MemberAddress[]>
     {
+        const reason = 'attendEvent';
+
         try
         {
-            // get list of members who attended a meetup event
+            // get the list of members who have already received tokens for attending an event
+            const membersAlreadyIssuedTokensForReason: string[] = await this.token.getIssueEvents(reason, this.contractAddressBlock);
+
+            logger.debug(`${membersAlreadyIssuedTokensForReason.length} members who have already been issued tokens for reason ${reason}, event id ${eventId}`);
+
+            // get list of members who attended the Meetup event
             const membersAtEvent: string[] = await this.meetup.getMembersAtEvent(eventId);
 
             logger.debug(`${membersAtEvent.length} members attended the Meetup event with id ${eventId}`);
 
-            return await this.issueTokensToMembers(membersAtEvent, this.issueAmounts.attendEvent, 'attendEvent')
+            // get members who have not already been issued tokens
+            const membersToIssueTokens = membersAtEvent.filter(member => membersAlreadyIssuedTokensForReason.indexOf(member) == -1);
+
+            return await this.issueTokensToMembers(membersToIssueTokens, this.issueAmounts.attendEvent, reason)
         }
         catch (err)
         {

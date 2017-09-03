@@ -4,9 +4,9 @@ An [Ethereum](https://www.ethereum.org/) [ERC20](https://github.com/ethereum/EIP
 # Smart Contract
 The solidity code for the smart contract is in [transferableToken.sol](./contracts/transferableToken.sol)
 
-The Sydney Ethereum contract address is `0xe06eda7435ba749b047380ced49121dde93334ae`
+The Sydney Ethereum contract address on main net is `0xe06eda7435ba749b047380ced49121dde93334ae`
 
-The contract can be viewed Etherscan at https://etherscan.io/address/0xe06eda7435ba749b047380ced49121dde93334ae 
+The contract can be viewed Etherscan at https://etherscan.io/token/0xe06eda7435bA749b047380CEd49121ddE93334Ae 
 
 The Application Binary Interface (ABI) for the contract is in [TransferableMeetupToken.abi](./bin/contracts/TransferableMeetupToken.abi)
 
@@ -88,3 +88,14 @@ chmod a+x startParity.sh
 ```
 
 This is start a new development blockchain using the [meetupChainSpec.json](./scripts/meetupChainSpec.json) specification file and [parityDevConfig.toml](./scripts/parityDevConfig.toml) config file. The chain data will be under [testchain](./testchain) in the parity folder.
+
+# Developers
+This project was an excuse to try out a number of new technologies including
+* Ethereum
+* Geth
+* Parity
+* Ethereum Web3 1.0 client
+* TypeScript
+* JavaScript Promises
+* JavaScript async/await
+* Websockets

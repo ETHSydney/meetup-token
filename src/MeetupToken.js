@@ -82,11 +82,17 @@ class MeetupToken {
     }
     issueTokensToMembersAtEvent(eventId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const reason = 'attendEvent';
             try {
-                // get list of members who attended a meetup event
+                // get the list of members who have already received tokens for attending an event
+                const membersAlreadyIssuedTokensForReason = yield this.token.getIssueEvents(reason, this.contractAddressBlock);
+                logger.debug(`${membersAlreadyIssuedTokensForReason.length} members who have already been issued tokens for reason ${reason}, event id ${eventId}`);
+                // get list of members who attended the Meetup event
                 const membersAtEvent = yield this.meetup.getMembersAtEvent(eventId);
                 logger.debug(`${membersAtEvent.length} members attended the Meetup event with id ${eventId}`);
-                return yield this.issueTokensToMembers(membersAtEvent, this.issueAmounts.attendEvent, 'attendEvent');
+                // get members who have not already been issued tokens
+                const membersToIssueTokens = membersAtEvent.filter(member => membersAlreadyIssuedTokensForReason.indexOf(member) == -1);
+                return yield this.issueTokensToMembers(membersToIssueTokens, this.issueAmounts.attendEvent, reason);
             }
             catch (err) {
                 const error = new VError(err, `Failed to issue tokens to members of the ${this.meetup.urlname} Meetup who attended event with id ${eventId}`);

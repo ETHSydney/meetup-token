@@ -14,7 +14,7 @@ export default class TransferableToken
     accountPassword: string;
 
     defaultGas = 100000;
-    defaultGasPrice = 4000000000;
+    defaultGasPrice = 2000000000;
 
     transactions: { [transactionHash: string] : number; } = {};
 
@@ -54,7 +54,7 @@ export default class TransferableToken
     }
 
     // deploy a new contract
-    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 5000000000): Promise<string>
+    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 4000000000): Promise<string>
     {
         const self = this;
         this.contractOwner = contractOwner;
@@ -250,7 +250,8 @@ export default class TransferableToken
 
         try
         {
-            const totalSupply = await this.contract.methods.totalSupply().call();
+            const totalSupplyStr = await this.contract.methods.totalSupply().call();
+            const totalSupply = Number(totalSupplyStr);
 
             logger.info(`Got ${totalSupply} ${description}`);
             return totalSupply;
@@ -269,7 +270,8 @@ export default class TransferableToken
 
         try
         {
-            const balance = await this.contract.methods.balanceOf(address).call();
+            const balanceStr: string = await this.contract.methods.balanceOf(address).call();
+            const balance: number = Number(balanceStr);
 
             logger.info(`Got ${balance} ${description}`);
             return balance;

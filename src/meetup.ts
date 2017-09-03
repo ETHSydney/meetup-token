@@ -90,7 +90,7 @@ export default class Meetup {
         }
     }
 
-    extractMemberAddressesFromPage(offset: number): Promise<MemberAddress[]>
+    private extractMemberAddressesFromPage(offset: number): Promise<MemberAddress[]>
     {
         const self = this;
 
@@ -134,7 +134,7 @@ export default class Meetup {
         });
     }
 
-    getMemberAddressFromProfile(memberProfile: MeetupProfile): void | MemberAddress
+    private getMemberAddressFromProfile(memberProfile: MeetupProfile): void | MemberAddress
     {
         if (memberProfile && memberProfile.group_profile && memberProfile.group_profile.intro)
         {

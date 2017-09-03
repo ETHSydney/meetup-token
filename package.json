@@ -34,6 +34,7 @@
     "@types/commander": "^2.9.1",
     "@types/node": "^6",
     "@types/underscore": "^1.8.1",
+    "jasmine-node": "^1.14.5",
     "typescript": "~2.4.2"
   }
 }
