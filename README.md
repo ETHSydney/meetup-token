@@ -99,3 +99,8 @@ This project was an excuse to try out a number of new technologies including
 * JavaScript Promises
 * JavaScript async/await
 * Websockets
+
+# Donations
+Donations to Sydney Ethereum can be made to:
+* Ether: eth.sydeth.com, ENS donate.sydethereum.eth 0xF777fc174776879eeD1855560C37Eded66389a3b
+* Bitcoin: btc.sydeth.com 1GBJdLEFseZqksQCMSAzNudaANkHkxpjx2

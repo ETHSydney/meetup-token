@@ -18,6 +18,7 @@ describe("Test Meetup API", function () {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const memberAddresses = yield meetup.extractMemberAddresses();
+                console.log(`${memberAddresses.length} meetup members has Ethereum addresses`);
                 expect(memberAddresses).toBeDefined();
                 expect(memberAddresses.length).toBeGreaterThan(0);
                 done();
