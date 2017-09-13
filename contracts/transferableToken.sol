@@ -14,7 +14,7 @@ contract ERC20Token
 {
 /* State */
     // The Total supply of tokens
-    uint totSupply;
+    uint256 totSupply;
     
     /// @return Token symbol
     string sym;
@@ -23,10 +23,10 @@ contract ERC20Token
     uint8 public decimals = 0;
     
     // Token ownership mapping
-    mapping (address => uint) balance;
+    mapping (address => uint256) balances;
     
     // Allowances mapping
-    mapping (address => mapping (address => uint)) allowed;
+    mapping (address => mapping (address => uint256)) allowed;
 
 /* Events */
     // Triggered when tokens are transferred.
@@ -54,55 +54,87 @@ contract ERC20Token
     }
     
     // Using an explicit getter allows for function overloading    
-    function totalSupply() public constant returns (uint)
+    function totalSupply() public constant returns (uint256)
     {
         return totSupply;
     }
     
     // Using an explicit getter allows for function overloading    
-    function balanceOf(address holderAddress) public constant returns (uint)
+    function balanceOf(address holderAddress) public constant returns (uint256 balance)
     {
-        return balance[holderAddress];
+        return balances[holderAddress];
     }
     
     // Using an explicit getter allows for function overloading    
-    function allowance(address ownerAddress, address spenderAddress) public constant returns (uint remaining)
+    function allowance(address ownerAddress, address spenderAddress) public constant returns (uint256 remaining)
     {
         return allowed[ownerAddress][spenderAddress];
     }
         
 
     // Send amount amount of tokens to address _to
-    // Reentry protection prevents attacks upon the state
-    function transfer(address toAddress, uint256 amount) public
+    function transfer(address toAddress, uint256 amount) public returns (bool success)
     {
-        xfer(msg.sender, toAddress, amount);
+        return xfer(msg.sender, toAddress, amount);
     }
 
     // Send amount amount of tokens from address _from to address _to
-    // Reentry protection prevents attacks upon the state
-    function transferFrom(address fromAddress, address toAddress, uint256 amount) public
+    function transferFrom(address fromAddress, address toAddress, uint256 amount) public returns (bool success)
     {
         require(amount <= allowed[fromAddress][msg.sender]);
         allowed[fromAddress][msg.sender] -= amount;
         xfer(fromAddress, toAddress, amount);
+        return true;
     }
 
     // Process a transfer internally.
-    function xfer(address fromAddress, address toAddress, uint amount) internal
+    function xfer(address fromAddress, address toAddress, uint amount) internal returns (bool success)
     {
-        require(amount <= balance[fromAddress]);
-        balance[fromAddress] -= amount;
-        balance[toAddress] += amount;
+        require(amount <= balances[fromAddress]);
+        balances[fromAddress] -= amount;
+        balances[toAddress] += amount;
         Transfer(fromAddress, toAddress, amount);
+        return true;
     }
 
     // Approves a third-party spender
-    // Reentry protection prevents attacks upon the state
-    function approve(address spender, uint256 amount) public
+    function approve(address spender, uint256 value) returns (bool) {
+
+        // To change the approve amount you first have to reduce the addresses`
+        //  allowance to zero by calling `approve(_spender, 0)` if it is not
+        //  already 0 to mitigate the race condition described here:
+        //  https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+        require((value == 0) || (allowed[msg.sender][spender] == 0));
+
+        allowed[msg.sender][spender] = value;
+        Approval(msg.sender, spender, value);
+        return true;
+    }
+
+    /**
+    * approve should be called when allowed[_spender] == 0. To increment
+    * allowed value is better to use this function to avoid 2 calls (and wait until 
+    * the first transaction is mined)
+    * From MonolithDAO Token.sol
+    */
+    function increaseApproval (address spender, uint addedValue) returns (bool success)
     {
-        allowed[msg.sender][spender] = amount;
-        Approval(msg.sender, spender, amount);
+        allowed[msg.sender][spender] = allowed[msg.sender][spender] + addedValue;
+        Approval(msg.sender, spender, allowed[msg.sender][spender]);
+        return true;
+    }
+
+    function decreaseApproval (address spender, uint subtractedValue) returns (bool success)
+    {
+        uint oldValue = allowed[msg.sender][spender];
+
+        if (subtractedValue > oldValue) {
+            allowed[msg.sender][spender] = 0;
+        } else {
+            allowed[msg.sender][spender] = oldValue - subtractedValue;
+        }
+        Approval(msg.sender, spender, allowed[msg.sender][spender]);
+        return true;
     }
 }
 
@@ -126,21 +158,23 @@ contract TransferableMeetupToken is ERC20Token
         address indexed fromAddress,
         uint256 amount);
 
-    function issue(address toAddress, uint amount, string externalId, string reason) public
+    function issue(address toAddress, uint amount, string externalId, string reason) public returns (bool)
     {
         require(owner == msg.sender);
         totSupply += amount;
-        balance[toAddress] += amount;
+        balances[toAddress] += amount;
         Issue(toAddress, amount, externalId, reason);
         Transfer(0x0, toAddress, amount);
+        return true;
     }
     
-    function redeem(uint amount) public
+    function redeem(uint amount) public returns (bool)
     {
-        require(balance[msg.sender] >= amount);
+        require(balances[msg.sender] >= amount);
         totSupply -= amount;
-        balance[msg.sender] -= amount;
+        balances[msg.sender] -= amount;
         Redeem(msg.sender, amount);
         Transfer(msg.sender, 0x0, amount);
+        return true;
     }
 }

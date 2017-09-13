@@ -1,6 +1,6 @@
 {
   "name": "meetup-token",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Ethereum ERC20 compatible token for members of a meetup.com group",
   "main": "index.js",
   "repository": {
