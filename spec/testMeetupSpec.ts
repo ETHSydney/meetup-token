@@ -25,7 +25,7 @@ describe("Test Meetup API", function()
             done();
             //done.fail(`Returned err ${err.toString()}`);
         }
-    }, 10000);
+    }, 30000);
 
     it("get members at event", async function(done)
     {

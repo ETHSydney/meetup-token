@@ -29,7 +29,7 @@ describe("Test Meetup API", function () {
                 //done.fail(`Returned err ${err.toString()}`);
             }
         });
-    }, 10000);
+    }, 30000);
     it("get members at event", function (done) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

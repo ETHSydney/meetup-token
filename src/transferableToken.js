@@ -92,9 +92,9 @@ class TransferableToken {
     // issue an amount of tokens to an address
     issueTokens(toAddress, amount, externalId, reason, _gas, _gasPrice) {
         const self = this;
-        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contract._address}, external id ${externalId} and reason ${reason}`;
         const gas = _gas || self.defaultGas;
         const gasPrice = _gasPrice || self.defaultGasPrice;
+        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contract._address}, external id ${externalId} and reason ${reason} using ${gas} gas and ${gasPrice} gas price`;
         return new Promise((resolve, reject) => {
             self.contract.methods.issue(toAddress, amount, externalId, reason)
                 .send({

@@ -5,7 +5,7 @@ import MeetupToken from "./src/MeetupToken";
 program
     .option('-k, --key <key>', 'Meetup API key')
     .option('-m, --meetupName <meetupName>', 'Meetup name. eg SydEthereum')
-    .option('-h, --wshost <wsHost>', 'Host of WS-RPC server listening interface (default: "localhost")')
+    .option('-w, --wshost <wsHost>', 'Host of WS-RPC server listening interface (default: "localhost")')
     .option('-p, --wsport <wsPort>', 'Post of WS-RPC server listening interface (default: "8546")')
     .option('-o, --owner <owner>', 'Address of contract owner')
     .option('-c, --contract <contract>', 'Contract address of the Meetup token')
@@ -164,7 +164,8 @@ function loadTokenConfig(): {
     }
 
     return {
-        wsurl: `ws://${wshost}:${wsport.toString()}`,
+        //wsurl: `ws://${wshost}:${wsport.toString()}`,
+        wsurl: `wss://${wshost}}`,
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         contractAddressBlock: program.contractBlock || config.contractAddressBlock,
