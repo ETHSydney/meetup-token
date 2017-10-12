@@ -14,8 +14,7 @@ const MeetupToken_1 = require("./src/MeetupToken");
 program
     .option('-k, --key <key>', 'Meetup API key')
     .option('-m, --meetupName <meetupName>', 'Meetup name. eg SydEthereum')
-    .option('-w, --wshost <wsHost>', 'Host of WS-RPC server listening interface (default: "localhost")')
-    .option('-p, --wsport <wsPort>', 'Post of WS-RPC server listening interface (default: "8546")')
+    .option('-u, --url <url>', 'URL of Ethereum node (default: "ws://localhost:8546")')
     .option('-o, --owner <owner>', 'Address of contract owner')
     .option('-c, --contract <contract>', 'Contract address of the Meetup token')
     .option('-b, --contractBlock <contractBlock>', 'Block the Meetup token contract was deployed')
@@ -114,15 +113,11 @@ function loadTokenConfig() {
         console.log(`The owner is the address that the contract was or will be created from. It's the externally owned account that is sending the Ethereum transaction.`);
         process.exit(1);
     }
-    // use the program options in preference to the configuration file or geth defaults
-    const wshost = program.wshost || config.wshost || 'localhost';
-    const wsport = program.wsport || config.wsport || '8546';
     if (!config.amounts) {
         config.amounts = {};
     }
     return {
-        //wsurl: `ws://${wshost}:${wsport.toString()}`,
-        wsurl: `wss://${wshost}}`,
+        url: program.url || config.url || 'ws://localhost:8546',
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         contractAddressBlock: program.contractBlock || config.contractAddressBlock,
@@ -146,7 +141,7 @@ function initMeetupToken() {
         contractAddress: tokenConfig.contractAddress,
         contractAddressBlock: tokenConfig.contractAddressBlock,
         contractOwner: tokenConfig.contractOwner,
-        wsURL: tokenConfig.wsurl,
+        url: tokenConfig.url,
         issueAmounts: tokenConfig.issueAmounts
     });
 }

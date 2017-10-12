@@ -1,7 +1,5 @@
 ---
-  wshost: "mainnet.infura.io/ws"
-  wsport: "443" # Infura
-#  wsport: "999" # Infura
+  url: "wss://mainnet.infura.io:443/ws"
   contractAddress: '0xe06eda7435bA749b047380CEd49121ddE93334Ae' # Main net
   contractAddressBlock: 4219770 # prod
   contractOwner: '0xCfF644e86Ca1E0212288BcC4ff36Ae9a47714bbc' # Main net

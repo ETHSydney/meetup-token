@@ -30,11 +30,12 @@ class MeetupToken {
         if (options.issueAmounts) {
             this.issueAmounts = options.issueAmounts;
         }
+        const url = options.url || "ws://localhost:8546";
         try {
-            this.token = new transferableToken_1.default(options.wsURL || "ws://localhost:8546", options.contractOwner, options.contractAddress);
+            this.token = new transferableToken_1.default(url, options.contractOwner, options.contractAddress);
         }
         catch (err) {
-            const error = new VError(err, `Could not connect to Ethereum node using websocket address ${options.wsURL}`);
+            const error = new VError(err, `Could not connect to Ethereum node using url ${url}`);
             logger.error(error.stack);
             throw error;
         }

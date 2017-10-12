@@ -11,7 +11,7 @@ export interface IMeetupToken {
     contractAddress?: string,
     contractAddressBlock?: number,
     contractOwner: string,
-    wsURL?: string,
+    url?: string,
     issueAmounts?: { [issueReason: string]: number}
 }
 
@@ -45,16 +45,18 @@ export default class MeetupToken
             this.issueAmounts = options.issueAmounts;
         }
 
+        const url = options.url || "ws://localhost:8546";
+
         try
         {
             this.token = new Token(
-                options.wsURL || "ws://localhost:8546",
+                url,
                 options.contractOwner,
                 options.contractAddress);
         }
         catch (err)
         {
-            const error = new VError(err, `Could not connect to Ethereum node using websocket address ${options.wsURL}`);
+            const error = new VError(err, `Could not connect to Ethereum node using url ${url}`);
             logger.error(error.stack);
             throw error;
         }

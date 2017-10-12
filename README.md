@@ -23,8 +23,7 @@ npm install meetup-token
   Options:
     -k, --key <key>                Meetup API key
     -m, --meetupName <meetupName>  Meetup name. eg SydEthereum
-    -h, --wshost <wsHost>          Host of WS-RPC server listening interface (default: "localhost")
-    -p, --wsport <wsPort>          Post of WS-RPC server listening interface (default: "8546")
+    -u, --url <URL>                URL of Ethereum node (default: "ws://localhost:8546")
     -o, --owner <owner>            Address of contract owner
     -c, --contract <contract>      Contract address of the Meetup token
     -b, --contractBlock <contractBlock>  Block the Meetup token contract was deployed
