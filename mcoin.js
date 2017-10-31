@@ -6,7 +6,6 @@ const MeetupToken_1 = require("./src/MeetupToken");
 program
     .option('-k, --key <key>', 'Meetup API key')
     .option('-m, --meetupName <meetupName>', 'Meetup name. eg SydEthereum')
-    .option('-u, --url <url>', 'URL of Ethereum node (default: "ws://localhost:8546")')
     .option('-o, --owner <owner>', 'Address of contract owner')
     .option('-c, --contract <contract>', 'Contract address of the Meetup token')
     .option('-b, --contractBlock <contractBlock>', 'Block the Meetup token contract was deployed')
@@ -105,7 +104,6 @@ function loadTokenConfig() {
         config.amounts = {};
     }
     return {
-        web3Url: program.url || config.web3Url || 'ws://localhost:8546',
         providerType: config.providerType || 'jsonrpc',
         providerParam1: config.providerParam1 || 'mainnet',
         providerParam2: config.providerParam2 || false,
@@ -133,7 +131,6 @@ function initMeetupToken() {
         contractAddress: tokenConfig.contractAddress,
         contractAddressBlock: tokenConfig.contractAddressBlock,
         contractOwner: tokenConfig.contractOwner,
-        web3Url: tokenConfig.web3Url,
         providerType: tokenConfig.providerType,
         providerParam1: tokenConfig.providerParam1,
         providerParam2: tokenConfig.providerParam2,

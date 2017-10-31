@@ -1,5 +1,4 @@
 ---
-  web3Url: "ws://localhost:8647"
   providerType: "jsonrpc"
   providerParam1: "http://localhost:8646"
   providerParam2: true  # testing

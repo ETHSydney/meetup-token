@@ -29,8 +29,7 @@
     "js-yaml": "^3.9.1",
     "meetup-api": "naddison36/meetup-api",
     "underscore": "^1.8.3",
-    "verror": "^1.10.0",
-    "web3": "1.0.0-beta.24"
+    "verror": "^1.10.0"
   },
   "devDependencies": {
     "@types/commander": "^2.9.1",

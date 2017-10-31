@@ -1,13 +1,12 @@
 // there is no type definition file for the meetup-api module so the following will error
-import * as Web3 from 'web3';
 import Meetup from './meetup';
 import {Wallet, Contract,
     provider as Provider,
     providers as Providers} from 'ethers';
 
 import Token from './transferableToken';
-//import EthSigner from './ethSigner/ethSigner-hardcoded';
-import EthSigner from './ethSigner/ethSigner-env';
+//TODO move to config
+import KeyStore from './keyStore/keyStore-env';
 import * as VError from 'verror';
 import * as logger from 'config-logger';
 import {MemberAddress} from './meetup';
@@ -18,7 +17,6 @@ export interface IMeetupToken {
     contractAddress?: string,
     contractAddressBlock?: number,
     contractOwner: string,
-    web3Url?: string,
     providerType?: string,
     providerParam1?: string,
     providerParam2?: string,
@@ -56,7 +54,6 @@ export default class MeetupToken
             this.issueAmounts = options.issueAmounts;
         }
 
-        const web3Url = options.web3Url || "ws://localhost:8546";
         const providerType = options.providerType || "local";
         const providerParam1 = options.providerParam1 || "ws://localhost:8546";
         const providerParam2 = options.providerParam2 || false;
@@ -64,7 +61,6 @@ export default class MeetupToken
 
         try
         {
-            const web3 = new Web3(web3Url);
             let provider: Provider;
             //const provider = new Providers.JsonRpcProvider(providerUrl, true, 100);  // ChainId 100 = 0x64
             if (providerType == 'infura') {
@@ -75,15 +71,14 @@ export default class MeetupToken
             }
 
             this.token = new Token(
-                web3,
                 provider,
                 options.contractOwner,
-                new EthSigner(),
+                new KeyStore(),
                 options.contractAddress);
         }
         catch (err)
         {
-            const error = new VError(err, `Could not connect to web3 using ${web3Url} or provider type ${providerType} with params ${providerParam1}, ${providerParam2} and ${providerParam3}`);
+            const error = new VError(err, `Could not connect to provider with type ${providerType} with params ${providerParam1}, ${providerParam2} and ${providerParam3}`);
             logger.error(error.stack);
             throw error;
         }

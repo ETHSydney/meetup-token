@@ -1,13 +1,10 @@
-import * as Web3 from 'web3';
 import {Wallet, Contract,
     provider as Provider} from 'ethers';
 import * as VError from 'verror';
-import * as _ from "underscore";
 import * as BigNumber from 'bn.js';
 import * as logger from 'config-logger';
 
-import {EthSigner} from './ethSigner/index.d';
-import {TransactionReceipt, EventLog} from 'web3/types.d';
+import {KeyStore} from './keyStore/index.d';
 
 export default class TransferableToken
 {
@@ -16,7 +13,6 @@ export default class TransferableToken
     contractAddress: string;
     contractOwner: string;
     accountPassword: string;
-    web3Contract: Web3.eth.Contract;
     // TODO need to get the Ethers type definition
     contract: object;
 
@@ -25,22 +21,18 @@ export default class TransferableToken
 
     transactions: { [transactionHash: string] : number; } = {};
 
-    constructor(readonly web3: Web3, readonly transactionProvider: Provider,
-                contractOwner: string, readonly ethSigner: EthSigner,
+    constructor(readonly transactionProvider: Provider,
+                contractOwner: string, readonly keyStore: KeyStore,
                 contractAddress?: string, accountPassword: string = "")
     {
         this.contractAddress = contractAddress;
         this.contractOwner = contractOwner;
         this.accountPassword = accountPassword;
 
-        this.web3Contract = new this.web3.eth.Contract(this.jsonInterface, contractAddress, {
-            from: contractOwner
-        });
-
         this.contract = new Contract(contractAddress, this.jsonInterface, transactionProvider);
     }
 
-    // deploy a new web3Contract
+    // deploy a new contract
     deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 4000000000): Promise<string>
     {
         const self = this;
@@ -62,7 +54,7 @@ export default class TransferableToken
             {
                 const deployTransaction = Contract.getDeployTransaction(self.contractBinary, self.jsonInterface, symbol, tokenName);
 
-                const wallet = new Wallet(await self.ethSigner.getPrivateKey(contractOwner), self.transactionProvider);
+                const wallet = new Wallet(await self.keyStore.getPrivateKey(contractOwner), self.transactionProvider);
 
                 // Send the transaction
                 const broadcastTransaction = await wallet.sendTransaction(deployTransaction);
@@ -74,12 +66,10 @@ export default class TransferableToken
 
                 logger.debug(`Created contract with address ${minedTransaction.creates} for ${description}`);
 
-                // TODO once all is switched to Ethers then the following can be removed
-                self.web3Contract.options.address = minedTransaction.creates;
+                self.contractAddress = minedTransaction.creates;
+                self.contract = new Contract(self.contractAddress, self.jsonInterface, wallet);
 
-                self.contract = new Contract(minedTransaction.creates, self.jsonInterface, wallet);
-
-                resolve(minedTransaction.creates);
+                resolve(self.contractAddress);
             }
             catch (err)
             {
@@ -98,16 +88,16 @@ export default class TransferableToken
         const gas = _gas || self.defaultGas;
         const gasPrice = _gasPrice || self.defaultGasPrice;
 
-        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.web3Contract._address}, external id ${externalId} and reason ${reason} using ${gas} gas and ${gasPrice} gas price`;
+        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contractAddress}, external id ${externalId} and reason ${reason} using ${gas} gas and ${gasPrice} gas price`;
 
         return new Promise<string>(async (resolve, reject) =>
         {
             try
             {
-                const privateKey = await self.ethSigner.getPrivateKey(self.contractOwner);
+                const privateKey = await self.keyStore.getPrivateKey(self.contractOwner);
                 const wallet = new Wallet(privateKey, self.transactionProvider);
 
-                const contract = new Contract(self.contract.address, self.jsonInterface, wallet);
+                const contract = new Contract(self.contractAddress, self.jsonInterface, wallet);
 
                 // send the transaction
                 const broadcastTransaction = await contract.issue(toAddress, amount, externalId, reason, {
@@ -146,7 +136,7 @@ export default class TransferableToken
 
     async getSymbol(): Promise<string>
     {
-        const description = `symbol of contract at address ${this.web3Contract._address}`;
+        const description = `symbol of contract at address ${this.contractAddress}`;
 
         try
         {
@@ -166,7 +156,7 @@ export default class TransferableToken
 
     async getName(): Promise<string>
     {
-        const description = `name of contract at address ${this.web3Contract._address}`;
+        const description = `name of contract at address ${this.contractAddress}`;
 
         try
         {
@@ -186,7 +176,7 @@ export default class TransferableToken
 
     async getTotalSupply(): Promise<BigNumber>
     {
-        const description = `total supply of contract at address ${this.web3Contract._address}`;
+        const description = `total supply of contract at address ${this.contractAddress}`;
 
         try
         {
@@ -206,11 +196,11 @@ export default class TransferableToken
 
     async getBalanceOf(address: string): Promise<BigNumber>
     {
-        const description = `balance of address ${address} in contract at address ${this.web3Contract._address}`;
+        const description = `balance of address ${address} in contract at address ${this.contractAddress}`;
 
         try
         {
-            const result = await this.contract.balance();
+            const result = await this.contract.balanceOf(address);
             const balance: BigNumber = result[0]._bn;
 
             logger.info(`Got ${balance} ${description}`);
@@ -226,7 +216,7 @@ export default class TransferableToken
 
     async getIssueEvents(reason?: string, fromBlock: number = 0): Promise<string[]>
     {
-        const description = `get unique list of external ids from past Issue events with reason ${reason} from block ${fromBlock} and contract address ${this.web3Contract._address}`;
+        const description = `get unique list of external ids from past Issue events with reason ${reason} from block ${fromBlock} and contract address ${this.contractAddress}`;
 
         const options = {
             fromBlock: fromBlock
@@ -236,21 +226,26 @@ export default class TransferableToken
         {
             logger.debug(`About to ${description}`);
 
-            const events = await this.web3Contract.getPastEvents('Issue', options);
+            const IssueEvent = this.contract.interface.events.Issue();
 
-            logger.debug(`Got ${events.length} past Issue events`);
+            const logs = await this.transactionProvider.getLogs({
+                fromBlock: fromBlock,
+                toBlock: "latest",
+                address: this.contractAddress,
+                topics: IssueEvent.topics
+            });
 
-            const externalIds: string[] = _.chain(events)
-                .filter((event) =>
+            const externalIds: string[] = [];
+
+            for (const log of logs)
+            {
+                const logData = IssueEvent.parse(log.topics, log.data);
+
+                if (!reason || reason && logData.reason == reason)
                 {
-                    if (reason) {
-                        return event.returnValues.reason == reason;
-                    }
-                    return true;
-                })
-                .map(event => {return event.returnValues.externalId;})
-                .uniq()
-                .value();
+                    externalIds.push(logData.externalId);
+                }
+            }
 
             logger.info(`${externalIds.length} unique external ids successfully returned from ${description}`);
 
