@@ -11,7 +11,9 @@ program
     .option('-b, --contractBlock <contractBlock>', 'Block the Meetup token contract was deployed')
     .option('-s, --symbol <symbol>', 'Symbol of the Mettup token (default "SET")')
     .option('-t, --tokenName <tokenName>', 'Name of the Meetup token (default "Transferable Sydney Ethereum Token")')
-    .option('-o, --verbose <level>', '0 trace, 1 debug, 2 info, 3 warn, 4 error (default 2)');
+    .option('-o, --verbose <level>', '0 trace, 1 debug, 2 info, 3 warn, 4 error (default 2)')
+    .option('-gp, --verbose <gasPrice>', 'gas price')
+    .option('-gl, --verbose <gasLimit>', 'gas limit');
 program
     .command('deploy')
     .description('deploy new Meetup token contract')
@@ -113,6 +115,8 @@ function loadTokenConfig() {
         contractAddressBlock: program.contractBlock || config.contractAddressBlock,
         symbol: program.symbol || config.symbol || 'SET',
         tokenName: program.tokenName || config.tokenName || 'Transferable Sydney Ethereum Token',
+        gasLimit: program.gl || config.gasPrice || 100000,
+        gasPrice: program.gp || config.gasPrice || 1000000000,
         issueAmounts: {
             newMember: program.newMember || config.issueAmounts.newMember || 1000,
             attendEvent: program.attendEvent || config.issueAmounts.attendEvent || 2000,

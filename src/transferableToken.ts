@@ -1,10 +1,12 @@
 import {Wallet, Contract,
     provider as Provider} from 'ethers';
 import * as VError from 'verror';
-import * as BigNumber from 'bn.js';
+import * as BN from 'bn.js';
 import * as logger from 'config-logger';
 
 import {KeyStore} from './keyStore/index.d';
+import {convertEthersBNs} from "./utils";
+import {TransactionReceipt} from "./index";
 
 export default class TransferableToken
 {
@@ -16,14 +18,12 @@ export default class TransferableToken
     // TODO need to get the Ethers type definition
     contract: object;
 
-    defaultGas = 100000;
-    defaultGasPrice = 4000000000;
-
     transactions: { [transactionHash: string] : number; } = {};
 
     constructor(readonly transactionProvider: Provider,
                 contractOwner: string, readonly keyStore: KeyStore,
-                contractAddress?: string, accountPassword: string = "")
+                contractAddress?: string, accountPassword: string = "",
+                readonly defaultGasLimit = 100000, readonly defaultGasPrice = 1000000000)
     {
         this.contractAddress = contractAddress;
         this.contractOwner = contractOwner;
@@ -33,14 +33,14 @@ export default class TransferableToken
     }
 
     // deploy a new contract
-    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gas = 900000, gasPrice = 4000000000): Promise<string>
+    deployContract(contractOwner: string, symbol = "SET", tokenName = "Transferable Meetup token", gasLimit = 900000, gasPrice = 2000000000): Promise<TransactionReceipt>
     {
         const self = this;
         this.contractOwner = contractOwner;
 
-        const description = `deploy transferable meetup token with token symbol ${symbol}, token name "${tokenName}" from sender address ${self.contractOwner}, gas ${gas} and gasPrice ${gasPrice}`;
+        const description = `deploy transferable meetup token with token symbol ${symbol}, token name "${tokenName}" from sender address ${self.contractOwner}, gas ${gasLimit} and gasPrice ${gasPrice}`;
 
-        return new Promise<string>(async (resolve, reject) =>
+        return new Promise<TransactionReceipt>(async (resolve, reject) =>
         {
             logger.debug(`About to ${description}`);
 
@@ -52,7 +52,12 @@ export default class TransferableToken
 
             try
             {
-                const deployTransaction = Contract.getDeployTransaction(self.contractBinary, self.jsonInterface, symbol, tokenName);
+                const deployTransactionData = Contract.getDeployTransaction(self.contractBinary, self.jsonInterface, symbol, tokenName);
+
+                const deployTransaction = Object.assign(deployTransactionData, {
+                    gasPrice: gasPrice,
+                    gasLimit: gasLimit
+                });
 
                 const wallet = new Wallet(await self.keyStore.getPrivateKey(contractOwner), self.transactionProvider);
 
@@ -61,15 +66,12 @@ export default class TransferableToken
 
                 logger.debug(`${broadcastTransaction.hash} is transaction hash for ${description}`);
 
-                // wait for the transaction to be mined
-                const minedTransaction = await self.transactionProvider.waitForTransaction(broadcastTransaction.hash);
+                const transactionReceipt = await self.processTransaction(broadcastTransaction.hash, description, gasLimit);
 
-                logger.debug(`Created contract with address ${minedTransaction.creates} for ${description}`);
-
-                self.contractAddress = minedTransaction.creates;
+                self.contractAddress = transactionReceipt.contractAddress;
                 self.contract = new Contract(self.contractAddress, self.jsonInterface, wallet);
 
-                resolve(self.contractAddress);
+                resolve(transactionReceipt);
             }
             catch (err)
             {
@@ -81,16 +83,14 @@ export default class TransferableToken
     }
 
     // issue an amount of tokens to an address
-    issueTokens(toAddress: string, amount: number, externalId: string, reason: string, _gas?: number, _gasPrice?: number): Promise<string>
+    issueTokens(toAddress: string, amount: number, externalId: string, reason: string,
+                gasLimit: number = this.defaultGasLimit, gasPrice: number = this.defaultGasPrice): Promise<TransactionReceipt>
     {
         const self = this;
 
-        const gas = _gas || self.defaultGas;
-        const gasPrice = _gasPrice || self.defaultGasPrice;
+        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contractAddress}, external id ${externalId} and reason ${reason} using ${gasLimit} gas and ${gasPrice} gas price`;
 
-        const description = `issue ${amount} tokens to address ${toAddress}, from sender address ${self.contractOwner}, contract ${this.contractAddress}, external id ${externalId} and reason ${reason} using ${gas} gas and ${gasPrice} gas price`;
-
-        return new Promise<string>(async (resolve, reject) =>
+        return new Promise<TransactionReceipt>(async (resolve, reject) =>
         {
             try
             {
@@ -102,28 +102,14 @@ export default class TransferableToken
                 // send the transaction
                 const broadcastTransaction = await contract.issue(toAddress, amount, externalId, reason, {
                     gasPrice: gasPrice,
-                    gasLimit: gas
+                    gasLimit: gasLimit
                 });
 
                 logger.debug(`${broadcastTransaction.hash} is transaction hash and nonce ${broadcastTransaction.nonce} for ${description}`);
 
-                // wait for the transaction to be mined
-                const minedTransaction = await this.transactionProvider.waitForTransaction(broadcastTransaction.hash);
+                const transactionReceipt = await self.processTransaction(broadcastTransaction.hash, description, gasLimit);
 
-                logger.debug(`${broadcastTransaction.hash} mined in block number ${minedTransaction.blockNumber} for ${description}`);
-
-                const transactionReceipt = await this.transactionProvider.getTransactionReceipt(broadcastTransaction.hash);
-
-                logger.debug(`Status ${transactionReceipt.status} and ${transactionReceipt.gasUsed} gas of ${gas} used for ${description}`);
-
-                // If a status of 0 was returned then the transaction failed. Status 1 means the transaction worked
-                if (transactionReceipt.hasOwnProperty('status') && transactionReceipt.status.eq(0)) {
-                    const error = new VError(`Failed ${broadcastTransaction.hash} transaction with status code ${transactionReceipt.status} and ${gas} gas used.`);
-                    logger.error(error.stack);
-                    resolve(error);
-                }
-
-                resolve(broadcastTransaction.hash);
+                resolve(transactionReceipt);
             }
             catch (err)
             {
@@ -174,14 +160,14 @@ export default class TransferableToken
         }
     }
 
-    async getTotalSupply(): Promise<BigNumber>
+    async getTotalSupply(): Promise<BN>
     {
         const description = `total supply of contract at address ${this.contractAddress}`;
 
         try
         {
             const result = await this.contract.totalSupply();
-            const totalSupply: BigNumber = result[0]._bn;
+            const totalSupply: BN = result[0]._bn;
 
             logger.info(`Got ${totalSupply} ${description}`);
             return totalSupply;
@@ -194,14 +180,14 @@ export default class TransferableToken
         }
     }
 
-    async getBalanceOf(address: string): Promise<BigNumber>
+    async getBalanceOf(address: string): Promise<BN>
     {
         const description = `balance of address ${address} in contract at address ${this.contractAddress}`;
 
         try
         {
             const result = await this.contract.balanceOf(address);
-            const balance: BigNumber = result[0]._bn;
+            const balance: BN = result[0]._bn;
 
             logger.info(`Got ${balance} ${description}`);
             return balance;
@@ -257,5 +243,26 @@ export default class TransferableToken
             console.log(error.stack);
             throw error;
         }
+    }
+
+    async processTransaction(hash: string, description: string, gasLimit: number): Promise<TransactionReceipt>
+    {
+        // wait for the transaction to be mined
+        const minedTransaction = await this.transactionProvider.waitForTransaction(hash);
+
+        logger.debug(`${hash} mined in block number ${minedTransaction.blockNumber} for ${description}`);
+
+        const rawTransactionReceipt: TransactionReceipt = await this.transactionProvider.getTransactionReceipt(hash);
+
+        const transactionReceipt = convertEthersBNs(rawTransactionReceipt) as TransactionReceipt;
+
+        logger.debug(`Status ${transactionReceipt.status} and ${transactionReceipt.gasUsed} gas of ${gasLimit} used for ${description}`);
+
+        // If a status of 0 was returned then the transaction failed. Status 1 means the transaction worked
+        if (transactionReceipt.status.eq(new BN(0))) {
+            throw VError(`Failed ${hash} transaction with status code ${transactionReceipt.status} and ${gasLimit} gas used.`);
+        }
+
+        return transactionReceipt;
     }
 }

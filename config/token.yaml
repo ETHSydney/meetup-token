@@ -6,6 +6,8 @@
   contractOwner: '0xCfF644e86Ca1E0212288BcC4ff36Ae9a47714bbc' # Main net
   symbol: 'SET'
   tokenName: 'Transferable Sydney Ethereum Token'
+  defaultGasLimit: 100000
+  defaultGasPrice: 1000000000
   issueAmounts:
     newMember: 1000
     attendEvent: 2000
