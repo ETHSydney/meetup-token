@@ -8,6 +8,14 @@ keys_path = "../testchain/keystore"
 identity = "MeetupChain Test Node"
 light = false
 
+[rpc]
+disable = false
+port = 8646
+interface = "local"
+cors = "null"
+apis = ["web3", "eth", "net", "parity", "traces", "rpc", "secretstore"]
+hosts = ["none"]
+
 [websockets]
 disable = false
 port = 8647
@@ -27,7 +35,7 @@ path = "../testchain/parity/signer"
 disable = true
 
 [dapps]
-disable = true
+disable = false
 
 [secretstore]
 disable = true
@@ -39,6 +47,6 @@ enable = false
 jit = false
 
 [misc]
-logging = "own_tx=trace"
+logging = "info"
 log_file = "../testchain/parity/MeetupChain.log"
 color = true

@@ -1,6 +1,13 @@
 // there is no type definition file for the meetup-api module so the following will error
+import * as Web3 from 'web3';
 import Meetup from './meetup';
+import {Wallet, Contract,
+    provider as Provider,
+    providers as Providers} from 'ethers';
+
 import Token from './transferableToken';
+//import EthSigner from './ethSigner/ethSigner-hardcoded';
+import EthSigner from './ethSigner/ethSigner-env';
 import * as VError from 'verror';
 import * as logger from 'config-logger';
 import {MemberAddress} from './meetup';
@@ -11,7 +18,11 @@ export interface IMeetupToken {
     contractAddress?: string,
     contractAddressBlock?: number,
     contractOwner: string,
-    url?: string,
+    web3Url?: string,
+    providerType?: string,
+    providerParam1?: string,
+    providerParam2?: string,
+    providerParam3?: string,
     issueAmounts?: { [issueReason: string]: number}
 }
 
@@ -45,18 +56,34 @@ export default class MeetupToken
             this.issueAmounts = options.issueAmounts;
         }
 
-        const url = options.url || "ws://localhost:8546";
+        const web3Url = options.web3Url || "ws://localhost:8546";
+        const providerType = options.providerType || "local";
+        const providerParam1 = options.providerParam1 || "ws://localhost:8546";
+        const providerParam2 = options.providerParam2 || false;
+        const providerParam3 = options.providerParam3 || 1;
 
         try
         {
+            const web3 = new Web3(web3Url);
+            let provider: Provider;
+            //const provider = new Providers.JsonRpcProvider(providerUrl, true, 100);  // ChainId 100 = 0x64
+            if (providerType == 'infura') {
+                provider = new Providers.InfuraProvider(providerParam1);
+            }
+            else if (providerType == 'jsonrpc') {
+                provider = new Providers.JsonRpcProvider(providerParam1, providerParam2, providerParam3);
+            }
+
             this.token = new Token(
-                url,
+                web3,
+                provider,
                 options.contractOwner,
+                new EthSigner(),
                 options.contractAddress);
         }
         catch (err)
         {
-            const error = new VError(err, `Could not connect to Ethereum node using url ${url}`);
+            const error = new VError(err, `Could not connect to web3 using ${web3Url} or provider type ${providerType} with params ${providerParam1}, ${providerParam2} and ${providerParam3}`);
             logger.error(error.stack);
             throw error;
         }

@@ -1,13 +1,5 @@
 #!/usr/bin/env node
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const program = require("commander");
 const MeetupToken_1 = require("./src/MeetupToken");
@@ -24,49 +16,45 @@ program
 program
     .command('deploy')
     .description('deploy new Meetup token contract')
-    .action(function (command, eventId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const meetupToken = initMeetupToken();
-        const tokenConfig = loadTokenConfig();
-        try {
-            const contract = yield meetupToken.deployTokenContract(tokenConfig.symbol, tokenConfig.tokenName);
-            console.log(`Contract address for newly deployed meetup token is ${contract}`);
-            process.exit();
-        }
-        catch (err) {
-            console.error(`Could not deploy new contract for meetup. Error: ${err.message}`);
-            process.exit(1);
-        }
-    });
+    .action(async function (command, eventId) {
+    const meetupToken = initMeetupToken();
+    const tokenConfig = loadTokenConfig();
+    try {
+        const contract = await meetupToken.deployTokenContract(tokenConfig.symbol, tokenConfig.tokenName);
+        console.log(`Contract address for newly deployed meetup token is ${contract}`);
+        process.exit();
+    }
+    catch (err) {
+        console.error(`Could not deploy new contract for meetup. Error: ${err.message}`);
+        process.exit(1);
+    }
 });
 program
     .command('members')
     .description('Issue tokens to new members of the Meetup')
-    .action(function (command, eventId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const meetupToken = initMeetupToken();
-        try {
-            const newMembers = yield meetupToken.issueTokensToNewMembers();
-            console.log(`Tokens issued to ${newMembers.length} new members`);
-            process.exit();
-        }
-        catch (err) {
-            console.error(`Could not issue tokens to new members of the ${meetupToken.meetup.urlname} meetup. Error: ${err.message}`);
-            process.exit(1);
-        }
-    });
+    .action(async function (command, eventId) {
+    const meetupToken = initMeetupToken();
+    try {
+        const newMembers = await meetupToken.issueTokensToNewMembers();
+        console.log(`Tokens issued to ${newMembers.length} new members`);
+        process.exit();
+    }
+    catch (err) {
+        console.error(`Could not issue tokens to new members of the ${meetupToken.meetup.urlname} meetup. Error: ${err.message}`);
+        process.exit(1);
+    }
 });
 program
     .command('event <id>')
     .description('Issue tokens to members who attended a Meetup event with Meetup event id')
-    .action((eventId) => __awaiter(this, void 0, void 0, function* () {
+    .action(async (eventId) => {
     const meetupToken = initMeetupToken();
     if (!eventId) {
         console.error(`Error: id of the Meetup event must be an argument to the event.`);
         process.exit(1);
     }
     try {
-        const members = yield meetupToken.issueTokensToMembersAtEvent(eventId);
+        const members = await meetupToken.issueTokensToMembersAtEvent(eventId);
         console.log(`${members.length} members were issued tokens`);
         process.exit();
     }
@@ -74,7 +62,7 @@ program
         console.error(`Error: could not issue token to members that attended Meetup event with id ${eventId}.`);
         process.exit(1);
     }
-}));
+});
 program.parse(process.argv);
 // display help if no commands passed into program. The first 2 arguments are node and mcoin.js
 if (process.argv.length < 3) {
@@ -117,7 +105,11 @@ function loadTokenConfig() {
         config.amounts = {};
     }
     return {
-        url: program.url || config.url || 'ws://localhost:8546',
+        web3Url: program.url || config.web3Url || 'ws://localhost:8546',
+        providerType: config.providerType || 'jsonrpc',
+        providerParam1: config.providerParam1 || 'mainnet',
+        providerParam2: config.providerParam2 || false,
+        providerParam3: config.providerParam3 || 1,
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         contractAddressBlock: program.contractBlock || config.contractAddressBlock,
@@ -141,7 +133,11 @@ function initMeetupToken() {
         contractAddress: tokenConfig.contractAddress,
         contractAddressBlock: tokenConfig.contractAddressBlock,
         contractOwner: tokenConfig.contractOwner,
-        url: tokenConfig.url,
+        web3Url: tokenConfig.web3Url,
+        providerType: tokenConfig.providerType,
+        providerParam1: tokenConfig.providerParam1,
+        providerParam2: tokenConfig.providerParam2,
+        providerParam3: tokenConfig.providerParam3,
         issueAmounts: tokenConfig.issueAmounts
     });
 }

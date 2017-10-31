@@ -124,7 +124,11 @@ function loadMeetupConfig(): {
 
 
 function loadTokenConfig(): {
-    url: string,
+    web3Url: string,
+    providerType: string,
+    providerParam1: string,
+    providerParam2: string,
+    providerParam3: string,
     contractOwner: string,
     contractAddress?: string,
     contractAddressBlock?: number,
@@ -159,7 +163,11 @@ function loadTokenConfig(): {
     }
 
     return {
-        url: program.url || config.url || 'ws://localhost:8546',
+        web3Url: program.url || config.web3Url || 'ws://localhost:8546',
+        providerType: config.providerType || 'jsonrpc',
+        providerParam1: config.providerParam1 || 'mainnet',
+        providerParam2: config.providerParam2 || false,
+        providerParam3: config.providerParam3 || 1,
         contractOwner: contractOwner,
         contractAddress: program.contract || config.contractAddress,
         contractAddressBlock: program.contractBlock || config.contractAddressBlock,
@@ -186,7 +194,11 @@ function initMeetupToken(): MeetupToken
         contractAddress: tokenConfig.contractAddress,
         contractAddressBlock: tokenConfig.contractAddressBlock,
         contractOwner: tokenConfig.contractOwner,
-        url: tokenConfig.url,
+        web3Url: tokenConfig.web3Url,
+        providerType: tokenConfig.providerType,
+        providerParam1: tokenConfig.providerParam1,
+        providerParam2: tokenConfig.providerParam2,
+        providerParam3: tokenConfig.providerParam3,
         issueAmounts: tokenConfig.issueAmounts
     });
 }

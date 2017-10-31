@@ -1,12 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 // there is no type definition file for the meetup-api module so the following will error
 const MeetupApi = require("meetup-api");
@@ -42,25 +34,23 @@ class Meetup {
             });
         });
     }
-    extractMemberAddresses() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const self = this;
-            let memberAddresses = [];
-            try {
-                const members = yield this.getMemberNumbers();
-                const pages = Math.round(members / this.pageSize);
-                for (let page = 0; page <= pages; page++) {
-                    const newMemberAddresses = yield self.extractMemberAddressesFromPage(page);
-                    memberAddresses = memberAddresses.concat(newMemberAddresses);
-                }
-                return memberAddresses;
+    async extractMemberAddresses() {
+        const self = this;
+        let memberAddresses = [];
+        try {
+            const members = await this.getMemberNumbers();
+            const pages = Math.round(members / this.pageSize);
+            for (let page = 0; page <= pages; page++) {
+                const newMemberAddresses = await self.extractMemberAddressesFromPage(page);
+                memberAddresses = memberAddresses.concat(newMemberAddresses);
             }
-            catch (err) {
-                const error = new VError(err, `could not extract member addresses`);
-                logger.error(error.stack);
-                throw error;
-            }
-        });
+            return memberAddresses;
+        }
+        catch (err) {
+            const error = new VError(err, `could not extract member addresses`);
+            logger.error(error.stack);
+            throw error;
+        }
     }
     extractMemberAddressesFromPage(offset) {
         const self = this;
