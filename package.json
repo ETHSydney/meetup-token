@@ -25,7 +25,7 @@
     "config": "^1.26.2",
     "config-logger": "git://github.com/naddison36/logger#v0.0.4",
     "js-yaml": "^3.9.1",
-    "meetup-api": "naddison36/meetup-api",
+    "meetup-api": "^1.4.29",
     "underscore": "^1.8.3",
     "verror": "^1.10.0",
     "web3": "^1.0.0-beta.18"
